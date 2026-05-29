@@ -3,8 +3,6 @@ vim.lsp.enable({
   "golangci-lint-ls",
 })
 
--- vim.diagnostic.config({ signs = true })
-
 vim.lsp.config("gopls", {
   settings = {
     gopls = {
@@ -21,15 +19,38 @@ vim.lsp.config("gopls", {
   },
 })
 
-vim.lsp.config('golangci_lint_ls', {
-	cmd = {'golangci-lint-langserver'},
+vim.lsp.config('golangci-lint-ls', {
+	cmd = { 'golangci-lint-langserver' },
+	filetypes = { 'go', 'gomod' },
 	root_markers = { '.git', 'go.mod' },
 	init_options = {
 		command = {
-			'golangci-lint', 'run', '--output.json.path', 'stdout', '--show-stats=false', '--issues-exit-code=1'
+			'golangci-lint', 'run',
+			'--output.json.path', 'stdout',
+			'--output.text.path', '/dev/null',
+			'--show-stats=false',
+			'--issues-exit-code=1',
 		},
 	},
 })
+
+--- Toggle golangci-lint-ls diagnostics on/off, keeping gopls compiler diagnostics
+---@param show_notify boolean|nil
+local function toggle_lint_diagnostics(show_notify)
+	local name = 'golangci-lint-ls'
+	local clients = vim.lsp.get_clients({ name = name })
+	if #clients > 0 then
+		-- suppress "LSP log: ..." message on client stop
+		pcall(vim.lsp.log.clear)
+		for _, c in ipairs(clients) do
+			c:stop()
+		end
+	else
+		vim.lsp.enable(name)
+	end
+end
+
+vim.keymap.set("n", "<leader>ul", toggle_lint_diagnostics, { desc = "Toggle [L]int diagnostics" })
 
 vim.keymap.set("n", "<leader>uh", function()
   local ft = vim.bo.filetype

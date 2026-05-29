@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(golangci-lint-langserver --version)",
+      "Bash(golangci-lint --version)",
+      "Read(//home/gorgek/proj/gote/**)",
+      "Bash(golangci-lint run *)",
+      "Bash(echo \"EXIT: $?\")",
+      "Bash(gci --version)",
+      "Bash(gofumpt --version)",
+      "Bash(goimports --version)",
+      "Bash(cp main.go /tmp/test_format.go)",
+      "Bash(echo \"EXIT=$?\")",
+      "Read(//tmp/**)",
+      "Bash(rm /tmp/test_format.go)"
+    ]
+  }
+}

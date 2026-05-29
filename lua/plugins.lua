@@ -23,6 +23,15 @@ vim.pack.add({
   {
     src = "~/.config/nvim/plugins/git-blame.nvim",
   },
+  {
+    src = "/home/gorgek/.config/nvim/plugins/conform.nvim",
+  },
+  {
+    src = "/home/gorgek/.config/nvim/plugins/barbar.nvim",
+  },
+  {
+    src = "/home/gorgek/.config/nvim/plugins/gitsigns.nvim",
+  },
 })
 
 require('nvim-treesitter').install {
@@ -372,11 +381,72 @@ lualine.setup({
 })
 
 
+-- ======================
+-- conform (formatter)
+-- ======================
+require("conform").setup({
+  formatters_by_ft = {
+    go = { "gofmt", "goimports" },
+  },
 
+  formatters = {
+    gofmt = {
+      command = "gofmt",
+      args = { "-r", "interface{} -> any" },
+    },
+    goimports = {
+      command = "goimports",
+      args = {
+        "-local", "api.sc-ci.sber.ru,stash.sigma.sbrf.ru,stash.delta.sbrf.ru",
+      },
+    },
+  },
+
+  format_on_save = {
+    timeout_ms = 1000,
+    lsp_format = "fallback",
+  },
+})
 
 vim.diagnostic.config({
   virtual_text = false,
 })
 
+vim.api.nvim_create_autocmd("BufWritePre", {
+  pattern = "*",
+  callback = function(args)
+    require("conform").format({ bufnr = args.buf })
+  end,
+})
+
+
+-- ======================
+-- barbar (bufferline)
+-- ======================
+vim.g.barbar_auto_setup = false
+
+require("barbar").setup({
+  sidebar_filetypes = {
+    ["neo-tree"] = { event = "BufWipeout" },
+  },
+  animation = false,
+  highlight_alternate = false,
+  icons = {
+    filetype = { enabled = true, custom_colors = false },
+    preset = "default",
+    separator_at_end = false,
+    current = {
+      separator = { left = "", right = "" },
+    },
+    inactive = {
+      separator = { left = "", right = "" },
+    },
+  },
+  highlight_inactive_file_icons = true,
+})
+
+vim.keymap.set("n", "<leader>]", "<cmd>BufferNext<CR>",     { desc = "Next Buffer" })
+vim.keymap.set("n", "<leader>[", "<cmd>BufferPrevious<CR>", { desc = "Prev Buffer" })
+vim.keymap.set("n", "<leader>bc", "<cmd>BufferClose<CR>",   { desc = "[C]lose" })
 
 
