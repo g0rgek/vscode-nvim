@@ -1,27 +1,27 @@
 vim.pack.add({
   {
-    src = '~/.config/nvim/plugins/nvim-treesitter',
+    src = '/home/gorgek/.config/nvim/plugins/nvim-treesitter',
   },
   {
-    src = '~/.config/nvim/plugins/which-key.nvim',
+    src = '/home/gorgek/.config/nvim/plugins/which-key.nvim',
   },
   {
-    src = '~/.config/nvim/plugins/snacks.nvim'
+    src = '/home/gorgek/.config/nvim/plugins/snacks.nvim'
   },
   {
-    src = '~/.config/nvim/plugins/tiny-inline-diagnostic.nvim'
+    src = '/home/gorgek/.config/nvim/plugins/tiny-inline-diagnostic.nvim'
   },
   {
-    src = '~/.config/nvim/plugins/goplements.nvim'
+    src = '/home/gorgek/.config/nvim/plugins/goplements.nvim'
   },
   {
-    src = "~/.config/nvim/plugins/lualine.nvim",
+    src = "/home/gorgek/.config/nvim/plugins/lualine.nvim",
   },
   {
-    src = "~/.config/nvim/plugins/nvim-web-devicons",
+    src = "/home/gorgek/.config/nvim/plugins/nvim-web-devicons",
   },
   {
-    src = "~/.config/nvim/plugins/git-blame.nvim",
+    src = "/home/gorgek/.config/nvim/plugins/git-blame.nvim",
   },
   {
     src = "/home/gorgek/.config/nvim/plugins/conform.nvim",
@@ -31,6 +31,24 @@ vim.pack.add({
   },
   {
     src = "/home/gorgek/.config/nvim/plugins/gitsigns.nvim",
+  },
+  {
+    src = "/home/gorgek/.config/nvim/plugins/edgy.nvim",
+  },
+  {
+    src = "/home/gorgek/.config/nvim/plugins/nui.nvim",
+  },
+  {
+    src = "/home/gorgek/.config/nvim/plugins/plenary.nvim",
+  },
+  {
+    src = "/home/gorgek/.config/nvim/plugins/neo-tree.nvim",
+  },
+  {
+    src = "/home/gorgek/.config/nvim/plugins/vim-dadbod",
+  },
+  {
+    src = "/home/gorgek/.config/nvim/plugins/vim-dadbod-ui",
   },
 })
 
@@ -91,6 +109,7 @@ require("which-key").setup({
     { '<leader>g', group = '[G]it' },
     { '<leader>t', group = '[T]erminal' },
     { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
+    { '<leader>e', group = '[E]dgy' },
   },
 })
 
@@ -448,5 +467,156 @@ require("barbar").setup({
 vim.keymap.set("n", "<leader>]", "<cmd>BufferNext<CR>",     { desc = "Next Buffer" })
 vim.keymap.set("n", "<leader>[", "<cmd>BufferPrevious<CR>", { desc = "Prev Buffer" })
 vim.keymap.set("n", "<leader>bc", "<cmd>BufferClose<CR>",   { desc = "[C]lose" })
+
+
+-- ======================
+-- neo-tree (file tree)
+-- ======================
+require("neo-tree").setup({
+  close_if_last_window = true,
+  popup_border_style = "rounded",
+  enable_git_status = true,
+  enable_diagnostics = false,
+  filesystem = {
+    filtered_items = {
+      hide_dotfiles = false,
+      hide_gitignored = true,
+    },
+  },
+  window = {
+    position = "left",
+    width = 35,
+  },
+})
+
+vim.keymap.set("n", "<leader>ee", "<cmd>Neotree toggle<CR>", { desc = "[E]xplorer" })
+
+
+-- ======================
+-- edgy (sidebar tabs)
+-- ======================
+local edgy = require("edgy")
+
+edgy.setup({
+  left = {
+    -- Tab 1: File tree
+    {
+      title = "Files",
+      ft = "neo-tree",
+      filter = function(buf)
+        return vim.b[buf].neo_tree_source == "filesystem"
+      end,
+      size = { height = 0.55 },
+    },
+    -- Tab 2: Database client (dadbod)
+    {
+      title = "Database",
+      ft = "dbui",
+      pinned = true,
+      collapsed = true,
+      open = "DBUI",
+      size = { height = 0.45 },
+    },
+    -- Tab 3: Kubernetes client (k9s in a terminal)
+    {
+      title = "Kubernetes",
+      ft = "k8s",
+      pinned = true,
+      collapsed = true,
+      open = function()
+        vim.cmd("rightbelow vsplit")
+        local buf = vim.api.nvim_create_buf(false, true)
+        vim.api.nvim_win_set_buf(0, buf)
+        vim.bo[buf].filetype = "k8s"
+        vim.fn.termopen("k9s")
+      end,
+      size = { height = 0.45 },
+    },
+  },
+
+  options = {
+    left = { size = 0.22 },
+  },
+
+  wo = {
+    winbar = true,
+    winfixwidth = true,
+  },
+
+  animate = {
+    enabled = false,
+  },
+
+  icons = {
+    closed = " ",
+    open = " ",
+  },
+})
+
+-- cycle left sidebar tabs (Alt+, / Alt+.)
+local function cycle_left_sidebar(dir)
+  local edgebar = require("edgy.config").layout["left"]
+  if not edgebar or #edgebar.views == 0 then
+    return
+  end
+
+  -- find the currently visible (non-placeholder) view
+  local cur = 0
+  for i, view in ipairs(edgebar.views) do
+    for _, w in ipairs(view.wins) do
+      if not w:is_pinned() and w.visible then
+        cur = i
+        break
+      end
+    end
+    if cur > 0 then
+      break
+    end
+  end
+
+  -- if nothing is expanded, default to first view
+  if cur == 0 then
+    cur = 1
+  end
+
+  -- hide current view's real windows
+  local cur_view = edgebar.views[cur]
+  for _, w in ipairs(cur_view.wins) do
+    if not w:is_pinned() then
+      w:hide()
+    end
+  end
+
+  -- advance and wrap
+  local next_i = cur + dir
+  if next_i > #edgebar.views then
+    next_i = 1
+  end
+  if next_i < 1 then
+    next_i = #edgebar.views
+  end
+
+  -- show the next view (focus triggers open_pinned for collapsed views)
+  local next_view = edgebar.views[next_i]
+  if #next_view.wins > 0 then
+    next_view.wins[1]:focus()
+  end
+end
+
+vim.keymap.set("n", "<M-,>", function()
+  cycle_left_sidebar(-1)
+end, { desc = "Prev sidebar tab" })
+
+vim.keymap.set("n", "<M-.>", function()
+  cycle_left_sidebar(1)
+end, { desc = "Next sidebar tab" })
+
+vim.keymap.set("n", "<leader>es", function()
+  edgy.select("left")
+end, { desc = "[S]elect sidebar view" })
+
+vim.keymap.set("n", "<leader>eh", function()
+  edgy.goto_main()
+end, { desc = "Go to main [H] editor" })
 
 

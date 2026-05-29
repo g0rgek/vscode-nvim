@@ -16,6 +16,10 @@
       "rev": "619363c30309d29ffa631e67c8183f2a72caa373",
       "src": "/home/gorgek/.config/nvim/plugins/conform.nvim"
     },
+    "edgy.nvim": {
+      "rev": "8bfd2808994a988c975694122f68624b8a219f5f",
+      "src": "/home/gorgek/.config/nvim/plugins/edgy.nvim"
+    },
     "fff.nvim": {
       "rev": "9a0deb39c3e4043b3137ecf2ed1b686d7a723462",
       "src": "https://github.com/dmtrKovalenko/fff.nvim"
@@ -48,6 +52,14 @@
       "rev": "a8fd9dadba00119f1d610936ef694515c448a47c",
       "src": "https://github.com/vieitesss/miniharp.nvim"
     },
+    "neo-tree.nvim": {
+      "rev": "2734f5cf4c59e79bbcc4521eb8d1e26fd305ad3c",
+      "src": "/home/gorgek/.config/nvim/plugins/neo-tree.nvim"
+    },
+    "nui.nvim": {
+      "rev": "de740991c12411b663994b2860f1a4fd0937c130",
+      "src": "/home/gorgek/.config/nvim/plugins/nui.nvim"
+    },
     "nvim-treesitter": {
       "rev": "4916d6592ede8c07973490d9322f187e07dfefac",
       "src": "/home/gorgek/.config/nvim/plugins/nvim-treesitter"
@@ -60,6 +72,10 @@
       "rev": "0fcc83805ad11cf714a949c98c605ed717e0b83e",
       "src": "https://github.com/stevearc/oil.nvim"
     },
+    "plenary.nvim": {
+      "rev": "74b06c6c75e4eeb3108ec01852001636d85a932b",
+      "src": "/home/gorgek/.config/nvim/plugins/plenary.nvim"
+    },
     "snacks.nvim": {
       "rev": "882c996cf28183f4d63640de0b4c02ec886d01f2",
       "src": "/home/gorgek/.config/nvim/plugins/snacks.nvim"
@@ -71,6 +87,14 @@
     "vague.nvim": {
       "rev": "fd58046b9d64259d9785e4aeb6d6f494c6943cad",
       "src": "https://github.com/vague-theme/vague.nvim"
+    },
+    "vim-dadbod": {
+      "rev": "6d1d41da4873a445c5605f2005ad2c68c99d8770",
+      "src": "/home/gorgek/.config/nvim/plugins/vim-dadbod"
+    },
+    "vim-dadbod-ui": {
+      "rev": "07e92e22114cc5b1ba4938d99897d85b58e20475",
+      "src": "/home/gorgek/.config/nvim/plugins/vim-dadbod-ui"
     },
     "vscode.nvim": {
       "rev": "aa1102a7e15195c9cca22730b09224a7f7745ba8",
