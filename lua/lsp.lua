@@ -1,6 +1,6 @@
 vim.lsp.enable({
   "gopls",
-  "golangci-lint-ls",
+  -- "golangci-lint-ls",
 })
 
 vim.lsp.config("gopls", {

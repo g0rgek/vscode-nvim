@@ -447,6 +447,7 @@ vim.g.barbar_auto_setup = false
 require("barbar").setup({
   sidebar_filetypes = {
     ["neo-tree"] = { event = "BufWipeout" },
+    ["dbui"] = { event = "BufWipeout" },
   },
   animation = false,
   highlight_alternate = false,
@@ -501,7 +502,7 @@ edgy.setup({
   left = {
     -- Tab 1: File tree
     {
-      title = "Files",
+      title = "󰈙 Files",
       ft = "neo-tree",
       filter = function(buf)
         return vim.b[buf].neo_tree_source == "filesystem"
@@ -510,26 +511,11 @@ edgy.setup({
     },
     -- Tab 2: Database client (dadbod)
     {
-      title = "Database",
+      title = "󰆼 Database",
       ft = "dbui",
       pinned = true,
       collapsed = true,
       open = "DBUI",
-      size = { height = 0.45 },
-    },
-    -- Tab 3: Kubernetes client (k9s in a terminal)
-    {
-      title = "Kubernetes",
-      ft = "k8s",
-      pinned = true,
-      collapsed = true,
-      open = function()
-        vim.cmd("rightbelow vsplit")
-        local buf = vim.api.nvim_create_buf(false, true)
-        vim.api.nvim_win_set_buf(0, buf)
-        vim.bo[buf].filetype = "k8s"
-        vim.fn.termopen("k9s")
-      end,
       size = { height = 0.45 },
     },
   },
@@ -548,10 +534,24 @@ edgy.setup({
   },
 
   icons = {
-    closed = " ",
-    open = " ",
+    closed = "󰅀",
+    open   = "󰝰",
   },
 })
+
+-- Fix: edgy's fold arrow hides real windows instead of closing them.
+-- In pinned views this means the placeholder never reappears. Patch
+-- show() so hide(false) on a real window in a pinned view calls close().
+do
+  local edgy_window = require("edgy.window")
+  local _show = edgy_window.show
+  edgy_window.show = function(self, visibility)
+    if visibility == false and not self:is_pinned() and self.view.pinned then
+      return self:close()
+    end
+    return _show(self, visibility)
+  end
+end
 
 -- cycle left sidebar tabs (Alt+, / Alt+.)
 local function cycle_left_sidebar(dir)
@@ -574,16 +574,15 @@ local function cycle_left_sidebar(dir)
     end
   end
 
-  -- if nothing is expanded, default to first view
   if cur == 0 then
     cur = 1
   end
 
-  -- hide current view's real windows
+  -- close current view's real windows
   local cur_view = edgebar.views[cur]
   for _, w in ipairs(cur_view.wins) do
     if not w:is_pinned() then
-      w:hide()
+      w:close()
     end
   end
 
@@ -596,7 +595,7 @@ local function cycle_left_sidebar(dir)
     next_i = #edgebar.views
   end
 
-  -- show the next view (focus triggers open_pinned for collapsed views)
+  -- show the next view
   local next_view = edgebar.views[next_i]
   if #next_view.wins > 0 then
     next_view.wins[1]:focus()
