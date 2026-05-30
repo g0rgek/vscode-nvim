@@ -3,6 +3,9 @@ vim.pack.add({
     src = '/home/gorgek/.config/nvim/plugins/nvim-treesitter',
   },
   {
+    src = '/home/gorgek/.config/nvim/plugins/nvim-treesitter-context',
+  },
+  {
     src = '/home/gorgek/.config/nvim/plugins/which-key.nvim',
   },
   {
@@ -49,6 +52,12 @@ vim.pack.add({
   },
   {
     src = "/home/gorgek/.config/nvim/plugins/vim-dadbod-ui",
+  },
+  {
+    src = "/home/gorgek/.config/nvim/plugins/fidget.nvim",
+  },
+  {
+    src = "/home/gorgek/.config/nvim/plugins/claudecode.nvim",
   },
 })
 
@@ -109,6 +118,7 @@ require("which-key").setup({
     { '<leader>g', group = '[G]it' },
     { '<leader>t', group = '[T]erminal' },
     { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
+    { '<leader>a', group = '[A]I (Claude)' },
     { '<leader>e', group = '[E]dgy' },
   },
 })
@@ -252,6 +262,24 @@ require("tiny-inline-diagnostic").setup({
   signs = {
     diag = "●",
     arrow = "",
+  },
+})
+
+require('nvim-web-devicons').setup({
+  variant = 'dark',
+  color_icons = true,
+  default = true,
+  override = {
+    go = {
+      icon = '󰟓',
+      color = '#519ABA',
+      name = 'Go',
+    },
+    md = {
+      icon = '',
+      color = '#519ABA',
+      name = 'Md',
+    },
   },
 })
 
@@ -496,6 +524,16 @@ vim.keymap.set("n", "<leader>ee", "<cmd>Neotree toggle<CR>", { desc = "[E]xplore
 -- ======================
 -- edgy (sidebar tabs)
 -- ======================
+
+-- Keep sidebar buffers out of barbar's tabline.
+-- FileType fires before barbar adds the buffer, so this is never visible.
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "dbui", "neo-tree" },
+  callback = function(ev)
+    vim.bo[ev.buf].buflisted = false
+  end,
+})
+
 local edgy = require("edgy")
 
 edgy.setup({
@@ -618,4 +656,51 @@ vim.keymap.set("n", "<leader>eh", function()
   edgy.goto_main()
 end, { desc = "Go to main [H] editor" })
 
+require("fidget").setup({
+  opts = {
+      progress = {
+        display = {
+          group_style = 'FidgetLSPName',
+        },
+      },
+      notification = {
+        window = {
+          normal_hl = 'FidgetText',
+          winblend = 0,
+          border = 'rounded',
+        },
+      },
+    },
+})
 
+
+
+-- ======================
+-- claudecode (Claude Code AI integration)
+-- ======================
+require("claudecode").setup({
+  terminal_cmd = vim.fn.expand("~/.local/bin/fcc-claude"),
+})
+
+vim.keymap.set({ "n", "v" }, "<leader>as", "<cmd>ClaudeCodeSend<CR>", { desc = "[S]end to Claude" })
+
+-- Claude Code and OS shell terminals (both on the right side, switchable)
+vim.keymap.set("n", "<leader>tc", "<cmd>ClaudeCode<CR>", { desc = "[C]laude Toggle" })
+
+vim.keymap.set("n", "<leader>tf", function()
+  local snacks = require("snacks")
+  local claude_cmd = vim.fn.expand("~/.local/bin/fcc-claude")
+  local term, created = snacks.terminal.get(claude_cmd, {
+    win = { position = "right" },
+    create = true,
+  })
+  if created then
+    term:show()
+  else
+    term:focus()
+  end
+end, { desc = "[F]ocus Claude term" })
+
+vim.keymap.set("n", "<leader>tt", function()
+  require("snacks").terminal.focus(nil, { win = { position = "right" } })
+end, { desc = "[T]erminal (shell)" })

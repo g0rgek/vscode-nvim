@@ -12,7 +12,8 @@
       "Bash(cp main.go /tmp/test_format.go)",
       "Bash(echo \"EXIT=$?\")",
       "Read(//tmp/**)",
-      "Bash(rm /tmp/test_format.go)"
+      "Bash(rm /tmp/test_format.go)",
+      "Bash(awk '/^vim.pack.add/{start=NR} /^\\\\\\)$/{if\\(start\\) print NR\": \"$0}' /home/gorgek/.config/nvim/lua/plugins.lua)"
     ]
   }
 }
