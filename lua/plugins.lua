@@ -68,9 +68,6 @@ vim.pack.add({
   {
     src = "/home/gorgek/.config/nvim/plugins/neogit",
   },
-  {
-    src = "/home/gorgek/.config/nvim/plugins/markdown-preview.nvim",
-  },
 })
 
 require('nvim-treesitter').install {
@@ -611,6 +608,7 @@ local function focus_edgy_view(ft, fallback_cmd)
     for _, view in ipairs(edgebar.views) do
       if view.ft == ft then
         if view.pinned then
+          view.collapsed = false
           view:open_pinned()
         elseif fallback_cmd then
           fallback_cmd()
