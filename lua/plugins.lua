@@ -285,6 +285,8 @@ require('nvim-web-devicons').setup({
 
 
 vim.g.gitblame_display_virtual_text = 0
+vim.g.gitblame_message_template = '<author> (<date>) <summary>'
+vim.g.gitblame_date_format = '%r'
 
 local lualine = require("lualine")
 local git_blame = require("gitblame")
@@ -374,7 +376,7 @@ lualine.setup({
   options = {
     section_separators = "",
     component_separators = "",
-    icons_enabled = false,
+    icons_enabled = true,
     globalstatus = true,
 
     disabled_filetypes = {
@@ -680,6 +682,7 @@ require("fidget").setup({
 -- ======================
 require("claudecode").setup({
   terminal_cmd = vim.fn.expand("~/.local/bin/fcc-claude"),
+  focus_after_send = true,
 })
 
 vim.keymap.set({ "n", "v" }, "<leader>as", "<cmd>ClaudeCodeSend<CR>", { desc = "[S]end to Claude" })
@@ -687,20 +690,53 @@ vim.keymap.set({ "n", "v" }, "<leader>as", "<cmd>ClaudeCodeSend<CR>", { desc = "
 -- Claude Code and OS shell terminals (both on the right side, switchable)
 vim.keymap.set("n", "<leader>tc", "<cmd>ClaudeCode<CR>", { desc = "[C]laude Toggle" })
 
-vim.keymap.set("n", "<leader>tf", function()
-  local snacks = require("snacks")
-  local claude_cmd = vim.fn.expand("~/.local/bin/fcc-claude")
-  local term, created = snacks.terminal.get(claude_cmd, {
-    win = { position = "right" },
-    create = true,
-  })
-  if created then
-    term:show()
-  else
-    term:focus()
-  end
-end, { desc = "[F]ocus Claude term" })
+vim.keymap.set("n", "<leader>tf", "<cmd>ClaudeCodeFocus<CR>", { desc = "[F]ocus Claude term" })
 
 vim.keymap.set("n", "<leader>tt", function()
-  require("snacks").terminal.focus(nil, { win = { position = "right" } })
-end, { desc = "[T]erminal (shell)" })
+  require("snacks").terminal.focus(nil, {
+    win = { position = "right" },
+    env = vim.v.count1 > 1 and { SNACKS_TERM = tostring(vim.v.count1) } or nil,
+    count = vim.v.count1 > 1 and vim.v.count1 or nil,
+    keys = {
+      term_normal = {
+        "<esc>",
+        function(self)
+          self.esc_timer = self.esc_timer or (vim.uv or vim.loop).new_timer()
+          if self.esc_timer:is_active() then
+            self.esc_timer:stop()
+            vim.cmd("stopinsert")
+          else
+            self.esc_timer:start(200, 0, function() end)
+            return "<esc>"
+          end
+        end,
+        mode = "t",
+        expr = true,
+        desc = "Double escape to normal mode",
+      },
+    },
+  })
+end, { desc = "[T]erminal (shell) (count = new)" })
+
+-- List and switch between all running terminals
+vim.keymap.set("n", "<leader>tl", function()
+  local term_m = require("snacks").terminal
+  local terms = term_m.list()
+  if #terms == 0 then
+    vim.notify("No terminals running", vim.log.levels.INFO)
+    return
+  end
+  local items = {}
+  for _, term in ipairs(terms) do
+    local title = vim.b[term.buf].term_title or "terminal"
+    table.insert(items, { term = term, label = title .. " [" .. term.buf .. "]" })
+  end
+  vim.ui.select(items, {
+    prompt = "Terminals:",
+    format_item = function(item) return item.label end,
+  }, function(choice)
+    if choice then
+      choice.term:show():focus()
+    end
+  end)
+end, { desc = "[L]ist terminals" })
