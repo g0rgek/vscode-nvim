@@ -634,8 +634,24 @@ vim.keymap.set("n", "<leader>es", function()
 end, { desc = "[S]elect sidebar tab" })
 
 vim.keymap.set("n", "<leader>eh", function()
-  edgy.close("left")
-end, { desc = "[H]ide sidebar" })
+  -- Check if sidebar is currently open (any edgy-managed window)
+  local sidebar_open = false
+  for _, win in ipairs(vim.api.nvim_list_wins()) do
+    if vim.wo[win].winfixwidth then
+      sidebar_open = true
+      break
+    end
+  end
+  if sidebar_open then
+    edgy.close("left")
+  else
+    edgy.open("left")
+    -- Neo-tree isn't pinned, so toggle/open won't restore it
+    vim.defer_fn(function()
+      require("neo-tree.command").execute({ action = "focus", source = "filesystem" })
+    end, 50)
+  end
+end, { desc = "[H]ide/reveal sidebar" })
 
 require("fidget").setup({
   opts = {
@@ -724,3 +740,4 @@ require("neogit").setup({
      diffview = true,
   }
 })
+

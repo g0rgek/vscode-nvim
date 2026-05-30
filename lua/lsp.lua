@@ -1,3 +1,14 @@
+vim.api.nvim_create_autocmd("LspAttach", {
+  callback = function(args)
+    local client = vim.lsp.get_client_by_id(args.data.client_id)
+    -- Disable semantic tokens — they fight with treesitter highlighting,
+    -- causing a visible flash/delay when opening buffers
+    if client then
+      client.server_capabilities.semanticTokensProvider = nil
+    end
+  end,
+})
+
 vim.lsp.enable({
   "gopls",
   -- "golangci-lint-ls",

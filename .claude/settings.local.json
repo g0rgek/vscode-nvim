@@ -13,7 +13,9 @@
       "Bash(echo \"EXIT=$?\")",
       "Read(//tmp/**)",
       "Bash(rm /tmp/test_format.go)",
-      "Bash(awk '/^vim.pack.add/{start=NR} /^\\\\\\)$/{if\\(start\\) print NR\": \"$0}' /home/gorgek/.config/nvim/lua/plugins.lua)"
+      "Bash(awk '/^vim.pack.add/{start=NR} /^\\\\\\)$/{if\\(start\\) print NR\": \"$0}' /home/gorgek/.config/nvim/lua/plugins.lua)",
+      "Bash(nvim --headless -c \"lua print\\(vim.inspect\\(vim.lsp.semantic_tokens\\)\\)\" -c \"qa\")",
+      "Bash(nvim --version --headless)"
     ]
   }
 }
