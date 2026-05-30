@@ -59,6 +59,15 @@ vim.pack.add({
   {
     src = "/home/gorgek/.config/nvim/plugins/claudecode.nvim",
   },
+  {
+    src = "/home/gorgek/.config/nvim/plugins/nvim-notify",
+  },
+  {
+    src = "/home/gorgek/.config/nvim/plugins/diffview.nvim",
+  },
+  {
+    src = "/home/gorgek/.config/nvim/plugins/neogit",
+  },
 })
 
 require('nvim-treesitter').install {
@@ -508,6 +517,9 @@ require("neo-tree").setup({
   enable_git_status = true,
   enable_diagnostics = false,
   filesystem = {
+    follow_current_file = {
+      enabled = true,
+    },
     filtered_items = {
       hide_dotfiles = false,
       hide_gitignored = true,
@@ -517,8 +529,6 @@ require("neo-tree").setup({
     position = "left",
   },
 })
-
-vim.keymap.set("n", "<leader>ee", "<cmd>Neotree toggle<CR>", { desc = "[E]xplorer" })
 
 
 -- ======================

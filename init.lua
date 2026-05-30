@@ -115,10 +115,20 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   end,
 })
 
+-- Use nvim-notify for dbui notification popups
+vim.g.db_ui_use_nvim_notify = 1
+
 require("plugins");
 require("lsp");
 require("autocmds")
 require("theme");
+
+-- Override vim.notify with nvim-notify (snacks also overrides it, we want
+-- nvim-notify to win so dbui notifications look polished)
+vim.notify = require("notify")
+require("notify").setup({
+  background_colour = "#1e1e1e",
+})
 
 vim.diagnostic.config {
 	signs = false,

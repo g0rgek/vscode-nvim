@@ -20,6 +20,10 @@
       "rev": "619363c30309d29ffa631e67c8183f2a72caa373",
       "src": "/home/gorgek/.config/nvim/plugins/conform.nvim"
     },
+    "diffview.nvim": {
+      "rev": "4516612fe98ff56ae0415a259ff6361a89419b0a",
+      "src": "/home/gorgek/.config/nvim/plugins/diffview.nvim"
+    },
     "edgy.nvim": {
       "rev": "8bfd2808994a988c975694122f68624b8a219f5f",
       "src": "/home/gorgek/.config/nvim/plugins/edgy.nvim"
@@ -64,9 +68,17 @@
       "rev": "2734f5cf4c59e79bbcc4521eb8d1e26fd305ad3c",
       "src": "/home/gorgek/.config/nvim/plugins/neo-tree.nvim"
     },
+    "neogit": {
+      "rev": "99326a1310fb2d616b455d2fd16d01bf00682f06",
+      "src": "/home/gorgek/.config/nvim/plugins/neogit"
+    },
     "nui.nvim": {
       "rev": "de740991c12411b663994b2860f1a4fd0937c130",
       "src": "/home/gorgek/.config/nvim/plugins/nui.nvim"
+    },
+    "nvim-notify": {
+      "rev": "8701bece920b38ea289b457f902e2ad184131a5d",
+      "src": "/home/gorgek/.config/nvim/plugins/nvim-notify"
     },
     "nvim-treesitter": {
       "rev": "4916d6592ede8c07973490d9322f187e07dfefac",
