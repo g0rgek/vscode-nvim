@@ -57,6 +57,10 @@ vim.o.timeoutlen = 300
 vim.o.splitright = true
 vim.o.splitbelow = true
 
+-- Prevent neovim from auto-equalizing window widths when windows
+-- appear/disappear (edgy sidebar expand/collapse would shift the layout)
+vim.o.equalalways = false
+
 -- Sets how neovim will display certain whitespace characters in the editor.
 vim.opt.list = true
 

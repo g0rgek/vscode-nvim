@@ -477,7 +477,6 @@ vim.g.barbar_auto_setup = false
 require("barbar").setup({
   sidebar_filetypes = {
     ["neo-tree"] = { event = "BufWipeout" },
-    ["dbui"] = { event = "BufWipeout" },
   },
   animation = false,
   highlight_alternate = false,
@@ -516,7 +515,6 @@ require("neo-tree").setup({
   },
   window = {
     position = "left",
-    width = 35,
   },
 })
 
@@ -561,12 +559,13 @@ edgy.setup({
   },
 
   options = {
-    left = { size = 0.22 },
+    left = { size = 50 },
   },
 
   wo = {
     winbar = true,
     winfixwidth = true,
+    winfixheight = true,
   },
 
   animate = {
@@ -593,6 +592,59 @@ do
   end
 end
 
+-- Fix: when a collapsed+pinned view opens its real tool (e.g. DBUI),
+-- the new window inherits visible=false from view.collapsed. Force
+-- it visible so it opens fully on the first click.
+do
+  local edgy_view = require("edgy.view")
+  local _update = edgy_view.update
+  edgy_view.update = function(self, wins)
+    -- Was this view showing only a pinned placeholder (or empty)?
+    local had_only_pinned = self.pinned and next(self.wins) ~= nil
+    for _, w in ipairs(self.wins) do
+      if not w:is_pinned() then
+        had_only_pinned = false
+        break
+      end
+    end
+    _update(self, wins)
+    -- If new real windows appeared, force them visible
+    if had_only_pinned and #self.wins > 0 then
+      for _, w in ipairs(self.wins) do
+        if not w:is_pinned() then
+          w.visible = true
+        end
+      end
+      vim.schedule(function()
+        require("edgy.layout").update()
+      end)
+    end
+  end
+end
+
+-- Lock left sidebar width at 50 cols so barbar tabs don't shift
+-- when edgy opens/closes internal splits (e.g. DB pane).
+-- neo-tree tries to enforce its own width (default 40), so we
+-- re-apply edgy's target width after every layout change.
+local function lock_sidebar()
+  local ok, cfg = pcall(require, "edgy.config")
+  if not ok then return end
+  local left = cfg.layout["left"]
+  if not left then return end
+  local target = left.size or 50
+  for _, view in ipairs(left.views) do
+    for _, w in ipairs(view.wins) do
+      if w:is_valid() and vim.api.nvim_win_get_width(w.win) ~= target then
+        pcall(vim.api.nvim_win_set_width, w.win, target)
+      end
+    end
+  end
+end
+vim.api.nvim_create_autocmd("WinResized", {
+  group = vim.api.nvim_create_augroup("lock_sidebar", { clear = true }),
+  callback = vim.schedule_wrap(lock_sidebar),
+})
+
 -- cycle left sidebar tabs (Alt+, / Alt+.)
 local function cycle_left_sidebar(dir)
   local edgebar = require("edgy.config").layout["left"]
@@ -600,11 +652,12 @@ local function cycle_left_sidebar(dir)
     return
   end
 
-  -- find the currently visible (non-placeholder) view
+  -- find the currently active view (has a visible real window, or
+  -- a pinned placeholder that was last interacted with)
   local cur = 0
   for i, view in ipairs(edgebar.views) do
     for _, w in ipairs(view.wins) do
-      if not w:is_pinned() and w.visible then
+      if w.visible and not w:is_pinned() then
         cur = i
         break
       end
@@ -618,10 +671,12 @@ local function cycle_left_sidebar(dir)
     cur = 1
   end
 
-  -- close current view's real windows
+  -- close current view's real windows, hide pinned ones
   local cur_view = edgebar.views[cur]
   for _, w in ipairs(cur_view.wins) do
-    if not w:is_pinned() then
+    if w:is_pinned() then
+      w:hide()
+    elseif w.visible then
       w:close()
     end
   end
@@ -635,7 +690,7 @@ local function cycle_left_sidebar(dir)
     next_i = #edgebar.views
   end
 
-  -- show the next view
+  -- show the next view (focus triggers pinned views to open)
   local next_view = edgebar.views[next_i]
   if #next_view.wins > 0 then
     next_view.wins[1]:focus()
