@@ -52,6 +52,10 @@
       "rev": "131a558e13f9f28b15cd235557150ccb23f89286",
       "src": "/home/gorgek/.config/nvim/plugins/lualine.nvim"
     },
+    "markdown-preview.nvim": {
+      "rev": "a923f5fc5ba36a3b17e289dc35dc17f66d0548ee",
+      "src": "/home/gorgek/.config/nvim/plugins/markdown-preview.nvim"
+    },
     "mason.nvim": {
       "rev": "cbf8d285e1462dd24acf3507817be2bbcb035919",
       "src": "https://github.com/mason-org/mason.nvim"

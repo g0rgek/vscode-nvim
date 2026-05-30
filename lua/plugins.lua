@@ -68,6 +68,9 @@ vim.pack.add({
   {
     src = "/home/gorgek/.config/nvim/plugins/neogit",
   },
+  {
+    src = "/home/gorgek/.config/nvim/plugins/markdown-preview.nvim",
+  },
 })
 
 require('nvim-treesitter').install {
@@ -214,6 +217,10 @@ vim.keymap.set({ "n", "x" }, "<leader>gb", function()
 end, {
   desc = "[B]rowse",
 })
+
+vim.keymap.set("n", "<leader>gg", ":Neogit<cr>", {desc = "[G]it"})
+vim.keymap.set("n", "<leader>gl", ":Neogit log<cr>", {desc = "[L]og"})
+vim.keymap.set("n", "<leader>gd", ":DiffviewOpen<cr>", {desc = "[D]iff"})
 
 vim.keymap.set("n", "<leader>ff", function()
   picker.files()
@@ -712,3 +719,10 @@ vim.keymap.set("n", "<leader>tl", function()
     end
   end)
 end, { desc = "[L]ist terminals" })
+
+require("neogit").setup({
+  disable_commit_confirmation = true,
+  integrations = {
+     diffview = true,
+  }
+})
