@@ -527,12 +527,12 @@ vim.keymap.set("n", "<leader>ee", "<cmd>Neotree toggle<CR>", { desc = "[E]xplore
 
 -- Keep sidebar buffers out of barbar's tabline.
 -- FileType fires before barbar adds the buffer, so this is never visible.
-vim.api.nvim_create_autocmd("FileType", {
-  pattern = { "dbui", "neo-tree" },
-  callback = function(ev)
-    vim.bo[ev.buf].buflisted = false
-  end,
-})
+-- vim.api.nvim_create_autocmd("FileType", {
+--   pattern = { "dbui", "neo-tree" },
+--   callback = function(ev)
+--     vim.bo[ev.buf].buflisted = false
+--   end,
+-- })
 
 local edgy = require("edgy")
 
@@ -578,140 +578,49 @@ edgy.setup({
   },
 })
 
--- Fix: edgy's fold arrow hides real windows instead of closing them.
--- In pinned views this means the placeholder never reappears. Patch
--- show() so hide(false) on a real window in a pinned view calls close().
-do
-  local edgy_window = require("edgy.window")
-  local _show = edgy_window.show
-  edgy_window.show = function(self, visibility)
-    if visibility == false and not self:is_pinned() and self.view.pinned then
-      return self:close()
-    end
-    return _show(self, visibility)
-  end
-end
 
--- Fix: when a collapsed+pinned view opens its real tool (e.g. DBUI),
--- the new window inherits visible=false from view.collapsed. Force
--- it visible so it opens fully on the first click.
-do
-  local edgy_view = require("edgy.view")
-  local _update = edgy_view.update
-  edgy_view.update = function(self, wins)
-    -- Was this view showing only a pinned placeholder (or empty)?
-    local had_only_pinned = self.pinned and next(self.wins) ~= nil
-    for _, w in ipairs(self.wins) do
-      if not w:is_pinned() then
-        had_only_pinned = false
-        break
-      end
+local function focus_edgy_view(ft, fallback_cmd)
+  -- If a window with this filetype is already open, focus it
+  for _, win in ipairs(vim.api.nvim_list_wins()) do
+    local buf = vim.api.nvim_win_get_buf(win)
+    if vim.bo[buf].filetype == ft then
+      vim.api.nvim_set_current_win(win)
+      return
     end
-    _update(self, wins)
-    -- If new real windows appeared, force them visible
-    if had_only_pinned and #self.wins > 0 then
-      for _, w in ipairs(self.wins) do
-        if not w:is_pinned() then
-          w.visible = true
+  end
+  -- Find the edgy view: use open_pinned() if pinned, otherwise fallback
+  local layout = require("edgy.config").layout
+  for _, edgebar in pairs(layout) do
+    for _, view in ipairs(edgebar.views) do
+      if view.ft == ft then
+        if view.pinned then
+          view:open_pinned()
+        elseif fallback_cmd then
+          fallback_cmd()
         end
-      end
-      vim.schedule(function()
-        require("edgy.layout").update()
-      end)
-    end
-  end
-end
-
--- Lock left sidebar width at 50 cols so barbar tabs don't shift
--- when edgy opens/closes internal splits (e.g. DB pane).
--- neo-tree tries to enforce its own width (default 40), so we
--- re-apply edgy's target width after every layout change.
-local function lock_sidebar()
-  local ok, cfg = pcall(require, "edgy.config")
-  if not ok then return end
-  local left = cfg.layout["left"]
-  if not left then return end
-  local target = left.size or 50
-  for _, view in ipairs(left.views) do
-    for _, w in ipairs(view.wins) do
-      if w:is_valid() and vim.api.nvim_win_get_width(w.win) ~= target then
-        pcall(vim.api.nvim_win_set_width, w.win, target)
+        return
       end
     end
   end
 end
-vim.api.nvim_create_autocmd("WinResized", {
-  group = vim.api.nvim_create_augroup("lock_sidebar", { clear = true }),
-  callback = vim.schedule_wrap(lock_sidebar),
-})
 
--- cycle left sidebar tabs (Alt+, / Alt+.)
-local function cycle_left_sidebar(dir)
-  local edgebar = require("edgy.config").layout["left"]
-  if not edgebar or #edgebar.views == 0 then
-    return
-  end
+vim.keymap.set("n", "<leader>ee", function()
+  focus_edgy_view("neo-tree", function()
+    require("neo-tree.command").execute({ action = "focus", source = "filesystem" })
+  end)
+end, { desc = "[E]xplorer (file tree)" })
 
-  -- find the currently active view (has a visible real window, or
-  -- a pinned placeholder that was last interacted with)
-  local cur = 0
-  for i, view in ipairs(edgebar.views) do
-    for _, w in ipairs(view.wins) do
-      if w.visible and not w:is_pinned() then
-        cur = i
-        break
-      end
-    end
-    if cur > 0 then
-      break
-    end
-  end
-
-  if cur == 0 then
-    cur = 1
-  end
-
-  -- close current view's real windows, hide pinned ones
-  local cur_view = edgebar.views[cur]
-  for _, w in ipairs(cur_view.wins) do
-    if w:is_pinned() then
-      w:hide()
-    elseif w.visible then
-      w:close()
-    end
-  end
-
-  -- advance and wrap
-  local next_i = cur + dir
-  if next_i > #edgebar.views then
-    next_i = 1
-  end
-  if next_i < 1 then
-    next_i = #edgebar.views
-  end
-
-  -- show the next view (focus triggers pinned views to open)
-  local next_view = edgebar.views[next_i]
-  if #next_view.wins > 0 then
-    next_view.wins[1]:focus()
-  end
-end
-
-vim.keymap.set("n", "<M-,>", function()
-  cycle_left_sidebar(-1)
-end, { desc = "Prev sidebar tab" })
-
-vim.keymap.set("n", "<M-.>", function()
-  cycle_left_sidebar(1)
-end, { desc = "Next sidebar tab" })
+vim.keymap.set("n", "<leader>ed", function()
+  focus_edgy_view("dbui")
+end, { desc = "[D]atabase view" })
 
 vim.keymap.set("n", "<leader>es", function()
   edgy.select("left")
-end, { desc = "[S]elect sidebar view" })
+end, { desc = "[S]elect sidebar tab" })
 
 vim.keymap.set("n", "<leader>eh", function()
-  edgy.goto_main()
-end, { desc = "Go to main [H] editor" })
+  edgy.close("left")
+end, { desc = "[H]ide sidebar" })
 
 require("fidget").setup({
   opts = {
@@ -729,8 +638,6 @@ require("fidget").setup({
       },
     },
 })
-
-
 
 -- ======================
 -- claudecode (Claude Code AI integration)
