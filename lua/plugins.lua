@@ -1,5 +1,8 @@
 vim.pack.add({
   {
+    src = "/home/gorgek/.config/nvim/plugins/nvim-web-devicons",
+  },
+  {
     src = '/home/gorgek/.config/nvim/plugins/nvim-treesitter',
   },
   {
@@ -19,9 +22,6 @@ vim.pack.add({
   },
   {
     src = "/home/gorgek/.config/nvim/plugins/lualine.nvim",
-  },
-  {
-    src = "/home/gorgek/.config/nvim/plugins/nvim-web-devicons",
   },
   {
     src = "/home/gorgek/.config/nvim/plugins/git-blame.nvim",
@@ -73,6 +73,15 @@ vim.pack.add({
   },
   {
     src = "/home/gorgek/.config/nvim/plugins/markview.nvim",
+  },
+  {
+    src = "/home/gorgek/.config/nvim/plugins/blink.lib",
+  },
+  {
+    src = "/home/gorgek/.config/nvim/plugins/blink.pairs",
+  },
+  {
+    src = "/home/gorgek/.config/nvim/plugins/blink.cmp",
   },
 })
 
@@ -130,7 +139,7 @@ require("which-key").setup({
     { '<leader>t', group = '[T]erminal' },
     { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
     { '<leader>a', group = '[A]I' },
-    { '<leader>e', group = 'Sid[E]bar' },
+    { '<leader>e', group = '[E]dgy' },
   },
 })
 
@@ -551,15 +560,6 @@ require("time-machine").setup({
 -- edgy (sidebar tabs)
 -- ======================
 
--- Keep sidebar buffers out of barbar's tabline.
--- FileType fires before barbar adds the buffer, so this is never visible.
--- vim.api.nvim_create_autocmd("FileType", {
---   pattern = { "dbui", "neo-tree" },
---   callback = function(ev)
---     vim.bo[ev.buf].buflisted = false
---   end,
--- })
-
 local edgy = require("edgy")
 
 edgy.setup({
@@ -710,20 +710,18 @@ vim.keymap.set("n", "<leader>eh", function()
 end, { desc = "[H]ide/reveal sidebar" })
 
 require("fidget").setup({
-  opts = {
-      progress = {
-        display = {
-          group_style = 'FidgetLSPName',
-        },
-      },
-      notification = {
-        window = {
-          normal_hl = 'FidgetText',
-          winblend = 0,
-          border = 'rounded',
-        },
-      },
+  progress = {
+    display = {
+      group_style = 'FidgetLSPName',
     },
+  },
+  notification = {
+    window = {
+      normal_hl = 'FidgetText',
+      winblend = 0,
+      border = 'rounded',
+    },
+  },
 })
 
 -- ======================
@@ -805,6 +803,127 @@ require("markview").setup({
     },
     html = {enable = true},
     yaml = {enable = true},
-});
+})
 
-vim.api.nvim_set_keymap("n", "<leader>pt", "<CMD>Markview toggle<CR>", { desc = "[T]oggle" });
+vim.api.nvim_set_keymap("n", "<leader>pt", "<CMD>Markview toggle<CR>", { desc = "[T]oggle" })
+
+require("blink.pairs").setup({})
+
+require("blink.cmp").setup({
+	keymap = {
+		preset = "super-tab",
+		["<Tab>"] = { "snippet_forward", "fallback" },
+		["<S-Tab>"] = { "snippet_backward", "fallback" },
+		-- ['<CR>'] = { 'accept', 'fallback' },
+	},
+
+	appearance = {
+		nerd_font_variant = "mono",
+		kind_icons = {
+			Text = "󰉿",
+			Method = "󰆧",
+			Function = "󰊕",
+			Constructor = "",
+			Field = "󰜢",
+			Variable = "󰀫",
+			Class = "󰠱",
+			Interface = "",
+			Module = "",
+			Property = "󰜢",
+			Unit = "󰑭",
+			Value = "󰎠",
+			Enum = "",
+			Keyword = "󰌋",
+			Snippet = "",
+			Color = "󰏘",
+			File = "󰈙",
+			Reference = "󰈇",
+			Folder = "󰉋",
+			EnumMember = "",
+			Constant = "󰏿",
+			Struct = "󰙅",
+			Event = "",
+			Operator = "󰆕",
+			TypeParameter = "",
+		},
+	},
+
+	completion = {
+		documentation = {
+			auto_show = true,
+			auto_show_delay_ms = 500,
+			window = {
+				border = "rounded",
+				winhighlight = "Normal:CmpDocumentation,FloatBorder:CmpDocumentationBorder,CursorLine:CmpDocumentationCursorLine,Search:None",
+				scrollbar = true,
+				max_width = 80,
+				max_height = 20,
+			},
+		},
+		menu = {
+			border = "rounded",
+			winhighlight = "Normal:CmpMenu,FloatBorder:CmpMenuBorder,CursorLine:PmenuSel,Search:None",
+			max_height = 15,
+			scrolloff = 2,
+			scrollbar = true,
+			draw = {
+				treesitter = { "lsp" },
+				columns = {
+					{ "kind_icon", "label", gap = 1 },
+					{ "label_description", gap = 1 },
+					{ "source_name" },
+				},
+				components = {
+					kind_icon = {
+						ellipsis = false,
+						text = function(ctx)
+							return ctx.kind_icon .. " "
+						end,
+						highlight = function(ctx)
+							return "CmpItemKind" .. ctx.kind
+						end,
+					},
+					label = {
+						width = { fill = true, max = 60 },
+						text = function(ctx)
+							return ctx.label .. ctx.label_detail
+						end,
+						highlight = function(ctx)
+							local highlights = {
+								nvim_lsp = "CmpItemAbbrMatch",
+								buffer = "CmpItemAbbrMatchFuzzy",
+								path = "CmpItemAbbrMatchFuzzy",
+							}
+							return highlights[ctx.source_name] or "CmpItemAbbr"
+						end,
+					},
+					label_description = {
+						width = { max = 30 },
+						text = function(ctx)
+							return ctx.label_description
+						end,
+						highlight = "CmpItemMenu",
+					},
+				},
+			},
+		},
+	},
+
+	sources = {
+		default = { "lsp", "path", "snippets", "buffer", "markview" },
+		per_filetype = {
+			lua = { "lsp", "path", "snippets", "buffer" },
+		},
+	},
+
+	snippets = { preset = "default" },
+
+	fuzzy = {
+		implementation = "rust",
+		sorts = { "label", "kind", "score" },
+	},
+
+	signature = {
+		enabled = false,
+	},
+})
