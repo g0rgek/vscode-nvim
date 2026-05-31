@@ -659,23 +659,25 @@ vim.keymap.set("n", "<leader>es", function()
 end, { desc = "[S]elect sidebar tab" })
 
 vim.keymap.set("n", "<leader>eh", function()
-  -- Check if sidebar is currently open (any edgy-managed window)
+  -- Check if sidebar is currently open by looking for edgy-managed
+  -- sidebar windows, not just any winfixwidth window (snacks.terminal
+  -- and other float/term windows also use winfixwidth).
+  local sidebar_fts = { "neo-tree", "dbui", "time-machine-list" }
   local sidebar_open = false
+  local sidebar_width = 0
   for _, win in ipairs(vim.api.nvim_list_wins()) do
-    if vim.wo[win].winfixwidth then
+    local buf = vim.api.nvim_win_get_buf(win)
+    local ft = vim.bo[buf].filetype
+    if vim.tbl_contains(sidebar_fts, ft) then
       sidebar_open = true
-      break
+      sidebar_width = sidebar_width + vim.api.nvim_win_get_width(win)
     end
   end
   if sidebar_open then
     edgy.close("left")
-    -- Reset barbar tabline offset since sidebar_filetypes BufWinLeave
-    -- may not fire reliably when edgy hides the sidebar
     require("barbar.api").set_offset(0)
   else
     edgy.open("left")
-    -- Non-pinned views aren't restored by open(), and pinned+collapsed views
-    -- stay as icons only — explicitly open both main tabs
     vim.defer_fn(function()
       require("neo-tree.command").execute({ action = "focus", source = "filesystem" })
       local layout = require("edgy.config").layout
@@ -694,7 +696,9 @@ vim.keymap.set("n", "<leader>eh", function()
       -- Set barbar tabline offset to sidebar width
       local sidebar_width = 0
       for _, win in ipairs(vim.api.nvim_list_wins()) do
-        if vim.wo[win].winfixwidth then
+        local buf = vim.api.nvim_win_get_buf(win)
+        local ft = vim.bo[buf].filetype
+        if vim.tbl_contains({ "neo-tree", "dbui", "time-machine-list" }, ft) then
           sidebar_width = sidebar_width + vim.api.nvim_win_get_width(win)
         end
       end
