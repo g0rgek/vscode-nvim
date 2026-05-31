@@ -68,6 +68,12 @@ vim.pack.add({
   {
     src = "/home/gorgek/.config/nvim/plugins/neogit",
   },
+  {
+    src = "/home/gorgek/.config/nvim/plugins/time-machine.nvim",
+  },
+  {
+    src = "/home/gorgek/.config/nvim/plugins/markview.nvim",
+  },
 })
 
 require('nvim-treesitter').install {
@@ -114,10 +120,6 @@ require("which-key").setup({
     { '<leader>', group = 'Leader' },
     { '<leader>o', group = '[O]pen' },
     { '<leader>c', group = '[C]ode', mode = { 'n', 'x' } },
-    { '<leader>pt', group = '[T]ypst' },
-    { '<leader>pm', group = '[M]arkdown' },
-    { '<leader>ps', group = '[S]trudel' },
-    { '<leader>pc', group = '[C]SV' },
     { '<leader>p', group = '[P]review' },
     { '<leader>b', group = '[B]uffer' },
     { '<leader>w', group = '[W]orkspace' },
@@ -127,8 +129,8 @@ require("which-key").setup({
     { '<leader>g', group = '[G]it' },
     { '<leader>t', group = '[T]erminal' },
     { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
-    { '<leader>a', group = '[A]I (Claude)' },
-    { '<leader>e', group = '[E]dgy' },
+    { '<leader>a', group = '[A]I' },
+    { '<leader>e', group = 'Sid[E]bar' },
   },
 })
 
@@ -489,7 +491,7 @@ vim.g.barbar_auto_setup = false
 
 require("barbar").setup({
   sidebar_filetypes = {
-    ["neo-tree"] = { event = "BufWipeout" },
+  	["neo-tree"] = {event = "BufWipeout"},
   },
   animation = false,
   highlight_alternate = false,
@@ -536,6 +538,16 @@ require("neo-tree").setup({
 
 
 -- ======================
+-- time-machine (file history / undo tree)
+-- ======================
+require("time-machine").setup({
+  split_opts = {
+    split = "left",
+    width = 50,
+  },
+})
+
+-- ======================
 -- edgy (sidebar tabs)
 -- ======================
 
@@ -559,7 +571,7 @@ edgy.setup({
       filter = function(buf)
         return vim.b[buf].neo_tree_source == "filesystem"
       end,
-      size = { height = 0.55 },
+      size = { height = 0.40 },
     },
     -- Tab 2: Database client (dadbod)
     {
@@ -568,7 +580,16 @@ edgy.setup({
       pinned = true,
       collapsed = true,
       open = "DBUI",
-      size = { height = 0.45 },
+      size = { height = 0.30 },
+    },
+    -- Tab 3: Time machine (file history / undo tree)
+    {
+      title = "󰉋 History",
+      ft = "time-machine-list",
+      pinned = true,
+      collapsed = true,
+      open = "TimeMachineToggle",
+      size = { height = 0.30 },
     },
   },
 
@@ -629,6 +650,10 @@ vim.keymap.set("n", "<leader>ed", function()
   focus_edgy_view("dbui")
 end, { desc = "[D]atabase view" })
 
+vim.keymap.set("n", "<leader>et", function()
+  focus_edgy_view("time-machine-list")
+end, { desc = "[T]ime machine (file history)" })
+
 vim.keymap.set("n", "<leader>es", function()
   edgy.select("left")
 end, { desc = "[S]elect sidebar tab" })
@@ -644,12 +669,39 @@ vim.keymap.set("n", "<leader>eh", function()
   end
   if sidebar_open then
     edgy.close("left")
+    -- Reset barbar tabline offset since sidebar_filetypes BufWinLeave
+    -- may not fire reliably when edgy hides the sidebar
+    require("barbar.api").set_offset(0)
   else
     edgy.open("left")
-    -- Neo-tree isn't pinned, so toggle/open won't restore it
+    -- Non-pinned views aren't restored by open(), and pinned+collapsed views
+    -- stay as icons only — explicitly open both main tabs
     vim.defer_fn(function()
       require("neo-tree.command").execute({ action = "focus", source = "filesystem" })
-    end, 50)
+      local layout = require("edgy.config").layout
+      for _, edgebar in pairs(layout) do
+        for _, view in ipairs(edgebar.views) do
+          if view.ft == "time-machine-list" then
+            view.collapsed = false
+            if #view.wins > 0 then
+              view.wins[1]:show(true)
+            else
+              view:open_pinned()
+            end
+          end
+        end
+      end
+      -- Set barbar tabline offset to sidebar width
+      local sidebar_width = 0
+      for _, win in ipairs(vim.api.nvim_list_wins()) do
+        if vim.wo[win].winfixwidth then
+          sidebar_width = sidebar_width + vim.api.nvim_win_get_width(win)
+        end
+      end
+      if sidebar_width > 0 then
+        require("barbar.api").set_offset(sidebar_width)
+      end
+    end, 100)
   end
 end, { desc = "[H]ide/reveal sidebar" })
 
@@ -741,3 +793,14 @@ require("neogit").setup({
   }
 })
 
+require("markview").setup({
+    preview = { 
+	enable = false,
+	icon_provider = "devicons",
+	filetypes ={ "markdown", "typst", "yaml", "html"},
+    },
+    html = {enable = true},
+    yaml = {enable = true},
+});
+
+vim.api.nvim_set_keymap("n", "<leader>pt", "<CMD>Markview toggle<CR>", { desc = "[T]oggle" });
