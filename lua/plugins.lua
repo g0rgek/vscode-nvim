@@ -89,6 +89,10 @@ vim.pack.add({
   {
     src = "/home/gorgek/.config/nvim/plugins/barbecue.nvim",
   },
+
+  {
+    src = "/home/gorgek/.config/nvim/plugins/guess-indent.nvim",
+  },
 })
 
 require('nvim-treesitter').install {
@@ -109,9 +113,7 @@ require('nvim-treesitter').install {
     "sql"
 }
 
-require("goplements").setup({
-  -- optional config (depends on plugin defaults)
-})
+require("goplements").setup({})
 require('goplements').toggle()
 
 require("which-key").setup({
@@ -824,7 +826,7 @@ require("blink.pairs").setup({
 require("blink.cmp").setup({
 	keymap = {
 		preset = "super-tab",
-		["<Tab>"] = { "snippet_forward", "fallback" },
+		["<Tab>"] = { "select_and_accept", "snippet_forward", "fallback" },
 		["<S-Tab>"] = { "snippet_backward", "fallback" },
 	},
 
@@ -948,7 +950,7 @@ require('barbecue').setup({
 })
 
 vim.api.nvim_create_autocmd({
-  'WinScrolled', -- or WinResized on NVIM-v0.9 and higher
+  'WinScrolled',   
   'BufWinEnter',
   'CursorHold',
   'InsertLeave',
@@ -961,3 +963,5 @@ vim.api.nvim_create_autocmd({
     require('barbecue.ui').update()
   end,
 })
+
+require('guess-indent').setup({})

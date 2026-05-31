@@ -64,6 +64,10 @@
       "rev": "1750ace64d42efcbc1ce36eef848a3cea5f88c79",
       "src": "/home/gorgek/.config/nvim/plugins/goplements.nvim"
     },
+    "guess-indent.nvim": {
+      "rev": "84a4987ff36798c2fc1169cbaff67960aed9776f",
+      "src": "/home/gorgek/.config/nvim/plugins/guess-indent.nvim"
+    },
     "lualine.nvim": {
       "rev": "131a558e13f9f28b15cd235557150ccb23f89286",
       "src": "/home/gorgek/.config/nvim/plugins/lualine.nvim"
