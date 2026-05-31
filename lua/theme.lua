@@ -1,7 +1,8 @@
 vim.pack.add({
   {
     src = '/home/gorgek/.config/nvim/plugins/vscode.nvim'
-  }
+  },
+  -- { src = "https://github.com/catppuccin/nvim", name = "catppuccin" }
 })
 
 require("vscode").setup({
@@ -53,3 +54,22 @@ vim.api.nvim_set_hl(0, 'DiagnosticWarn', { bg = '#3E2F23', fg = '#FA973B' })
 vim.api.nvim_set_hl(0, 'DiagnosticInfo', { bg = '#233332', fg = '#30AF65' })
 vim.api.nvim_set_hl(0, 'DiagnosticHint', { bg = '#24313A', fg = '#569CD6' })
 
+-- BlinkPairs rainbow parentheses colors.
+-- Work around a blink.pairs namespace bug: the plugin defines these in the
+-- blink_pairs (underscore) namespace, but applies extmarks in blink.pairs
+-- (dot). Defining them globally (ns=0) makes them visible to the extmarks.
+-- The ColorScheme autocmd re-applies them after any colorscheme change,
+-- which is necessary because themes like vscode.nvim call `hi clear` on load.
+local function set_blink_pairs_hl()
+  vim.api.nvim_set_hl(0, 'BlinkPairsWhite', { fg = '#FFD700', default = true })
+  vim.api.nvim_set_hl(0, 'BlinkPairsPurple', { fg = c.vscPink, default = true })
+  vim.api.nvim_set_hl(0, 'BlinkPairsOrange', { fg = '#d65d0e', default = true })
+  vim.api.nvim_set_hl(0, 'BlinkPairsBlue', { fg = '#569CD6', default = true })
+  vim.api.nvim_set_hl(0, 'BlinkPairsUnmatched', { fg = '#ff007c', default = true })
+  vim.api.nvim_set_hl(0, 'BlinkPairsMatchParen', { link = 'MatchParen', default = true })
+end
+set_blink_pairs_hl()
+vim.api.nvim_create_autocmd('ColorScheme', {
+  group = vim.api.nvim_create_augroup('user_blink_pairs_hl', {}),
+  callback = set_blink_pairs_hl,
+})

@@ -83,6 +83,12 @@ vim.pack.add({
   {
     src = "/home/gorgek/.config/nvim/plugins/blink.cmp",
   },
+  {
+    src = "/home/gorgek/.config/nvim/plugins/nvim-navic",
+  },
+  {
+    src = "/home/gorgek/.config/nvim/plugins/barbecue.nvim",
+  },
 })
 
 require('nvim-treesitter').install {
@@ -807,14 +813,19 @@ require("markview").setup({
 
 vim.api.nvim_set_keymap("n", "<leader>pt", "<CMD>Markview toggle<CR>", { desc = "[T]oggle" })
 
-require("blink.pairs").setup({})
+require("blink.pairs").setup({
+	highlights = {
+		-- Disable the built-in matchparen (we use Neovim's built-in instead)
+		matchparen = { enabled = false },
+		groups = { "BlinkPairsWhite", "BlinkPairsPurple", "BlinkPairsBlue" },
+	},
+})
 
 require("blink.cmp").setup({
 	keymap = {
 		preset = "super-tab",
 		["<Tab>"] = { "snippet_forward", "fallback" },
 		["<S-Tab>"] = { "snippet_backward", "fallback" },
-		-- ['<CR>'] = { 'accept', 'fallback' },
 	},
 
 	appearance = {
@@ -926,4 +937,27 @@ require("blink.cmp").setup({
 	signature = {
 		enabled = false,
 	},
+})
+
+require('barbecue').setup({
+  exclude_filetypes = { 'terminal', 'netrw', 'toggleterm', 'snacks_picker_list', 'neo-tree' },
+  theme = {
+    normal = { bg = '#2D2D2D', bold = false },
+  },
+  create_autocmd = false, -- prevent barbecue from updating itself automatically
+})
+
+vim.api.nvim_create_autocmd({
+  'WinScrolled', -- or WinResized on NVIM-v0.9 and higher
+  'BufWinEnter',
+  'CursorHold',
+  'InsertLeave',
+
+  -- include this if you have set `show_modified` to `true`
+  -- 'BufModifiedSet',
+}, {
+  group = vim.api.nvim_create_augroup('barbecue.updater', {}),
+  callback = function()
+    require('barbecue.ui').update()
+  end,
 })

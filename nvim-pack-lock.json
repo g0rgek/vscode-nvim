@@ -4,6 +4,10 @@
       "rev": "a4bef5b4fc1f064f2f673172252028eae18191c9",
       "src": "/home/gorgek/.config/nvim/plugins/barbar.nvim"
     },
+    "barbecue.nvim": {
+      "rev": "3e31404f0b93a2c30d151abf0648650ac811c664",
+      "src": "/home/gorgek/.config/nvim/plugins/barbecue.nvim"
+    },
     "blink.cmp": {
       "rev": "78336bc89ee5365633bcf754d93df01678b5c08f",
       "src": "https://github.com/saghen/blink.cmp"
@@ -15,6 +19,10 @@
     "blink.pairs": {
       "rev": "4e43012356d33a26f69eae475f746fbe9f325f44",
       "src": "/home/gorgek/.config/nvim/plugins/blink.pairs"
+    },
+    "catppuccin": {
+      "rev": "0303a7208dba448c459767486a38a6ec05c4216b",
+      "src": "https://github.com/catppuccin/nvim"
     },
     "claudecode.nvim": {
       "rev": "102d835c964069c9c5e37abaf05ae4f9c3ee6f00",
@@ -91,6 +99,10 @@
     "nui.nvim": {
       "rev": "de740991c12411b663994b2860f1a4fd0937c130",
       "src": "/home/gorgek/.config/nvim/plugins/nui.nvim"
+    },
+    "nvim-navic": {
+      "rev": "f5eba192f39b453675d115351808bd51276d9de5",
+      "src": "/home/gorgek/.config/nvim/plugins/nvim-navic"
     },
     "nvim-notify": {
       "rev": "8701bece920b38ea289b457f902e2ad184131a5d",
