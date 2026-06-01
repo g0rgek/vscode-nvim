@@ -104,6 +104,10 @@
       "rev": "de740991c12411b663994b2860f1a4fd0937c130",
       "src": "/home/gorgek/.config/nvim/plugins/nui.nvim"
     },
+    "nvim-dbee": {
+      "rev": "dda517694889a5d238d7aa407403984da9f80cc0",
+      "src": "/home/gorgek/.config/nvim/plugins/nvim-dbee"
+    },
     "nvim-navic": {
       "rev": "f5eba192f39b453675d115351808bd51276d9de5",
       "src": "/home/gorgek/.config/nvim/plugins/nvim-navic"

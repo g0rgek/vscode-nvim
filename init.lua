@@ -117,6 +117,10 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 
 -- Use nvim-notify for dbui notification popups
 vim.g.db_ui_use_nvim_notify = 1
+-- Disable dadbod-ui's built-in progress spinner and query notifications
+-- (we use a custom live timer near the query buffer instead)
+vim.g.db_ui_disable_progress_bar = 1
+vim.g.db_ui_disable_info_notifications = 1
 
 require("plugins");
 require("lsp");

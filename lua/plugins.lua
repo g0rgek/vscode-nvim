@@ -54,6 +54,9 @@ vim.pack.add({
     src = "/home/gorgek/.config/nvim/plugins/vim-dadbod-ui",
   },
   {
+    src = "/home/gorgek/.config/nvim/plugins/nvim-dbee",
+  },
+  {
     src = "/home/gorgek/.config/nvim/plugins/fidget.nvim",
   },
   {
@@ -622,6 +625,37 @@ edgy.setup({
 })
 
 
+-- ======================
+-- nvim-dbee (standalone database client)
+-- ======================
+require("dbee").setup({
+  drawer = {
+    disable_help = true,
+  },
+  editor = {
+    directory = vim.fn.stdpath("data") .. "/dbee/notes",
+  },
+})
+
+-- Auto-install the Go backend binary if missing
+if vim.fn.executable(vim.fn.stdpath("data") .. "/dbee/bin/dbee") ~= 1 then
+  vim.schedule(function()
+    pcall(require("dbee").install)
+  end)
+end
+
+vim.keymap.set("n", "<leader>ad", function()
+  require("dbee").open()
+end, { desc = "[D]bee (standalone)" })
+
+-- ======================
+-- dadbod live query timer
+-- ======================
+-- Shows a floating elapsed-time counter near the query buffer while executing.
+-- Hooks into dadbod's DBExecutePre/DBExecutePost autocommands.
+require("dadbod-timer").setup()
+
+
 local function focus_edgy_view(ft, fallback_cmd)
   -- If a window with this filetype is already open, focus it
   for _, win in ipairs(vim.api.nvim_list_wins()) do
@@ -942,7 +976,7 @@ require("blink.cmp").setup({
 })
 
 require('barbecue').setup({
-  exclude_filetypes = { 'terminal', 'netrw', 'toggleterm', 'snacks_picker_list', 'neo-tree' },
+  exclude_filetypes = { 'terminal', 'netrw', 'toggleterm', 'snacks_picker_list', 'neo-tree', 'sql', 'dbout' },
   theme = {
     normal = { bg = '#2D2D2D', bold = false },
   },
