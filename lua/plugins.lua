@@ -54,9 +54,6 @@ vim.pack.add({
     src = "/home/gorgek/.config/nvim/plugins/vim-dadbod-ui",
   },
   {
-    src = "/home/gorgek/.config/nvim/plugins/nvim-dbee",
-  },
-  {
     src = "/home/gorgek/.config/nvim/plugins/fidget.nvim",
   },
   {
@@ -623,30 +620,6 @@ edgy.setup({
     open   = "󰝰",
   },
 })
-
-
--- ======================
--- nvim-dbee (standalone database client)
--- ======================
-require("dbee").setup({
-  drawer = {
-    disable_help = true,
-  },
-  editor = {
-    directory = vim.fn.stdpath("data") .. "/dbee/notes",
-  },
-})
-
--- Auto-install the Go backend binary if missing
-if vim.fn.executable(vim.fn.stdpath("data") .. "/dbee/bin/dbee") ~= 1 then
-  vim.schedule(function()
-    pcall(require("dbee").install)
-  end)
-end
-
-vim.keymap.set("n", "<leader>ad", function()
-  require("dbee").open()
-end, { desc = "[D]bee (standalone)" })
 
 -- ======================
 -- dadbod live query timer
