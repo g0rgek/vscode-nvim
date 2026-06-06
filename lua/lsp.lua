@@ -12,6 +12,8 @@ vim.api.nvim_create_autocmd("LspAttach", {
 vim.lsp.enable({
   "gopls",
   -- "golangci-lint-ls",
+  "json-language-server",
+  "yaml-language-server"
 })
 
 vim.lsp.config("gopls", {
@@ -61,14 +63,14 @@ local function toggle_lint_diagnostics(show_notify)
 	end
 end
 
-vim.keymap.set("n", "<leader>ul", toggle_lint_diagnostics, { desc = "Toggle [L]int diagnostics" })
+map("n", "<leader>ul", toggle_lint_diagnostics, { desc = "[L]int diagnostics" })
 
-vim.keymap.set("n", "<leader>uh", function()
+map("n", "<leader>uh", function()
   local ft = vim.bo.filetype
   local enabled = vim.lsp.inlay_hint.is_enabled({ bufnr = 0 })
   vim.lsp.inlay_hint.enable(not enabled, { bufnr = 0 })
    if ft == 'go' then
       require('goplements').toggle()
    end
-end, { desc = "Toggle inlay hints" })
+end, { desc = "Inlay [H]ints" })
 
