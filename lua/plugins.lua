@@ -106,26 +106,7 @@ vim.pack.add({
   -- },
 })
 
-
-require('nvim-treesitter').install {
-    "regex",
-    "go",
-    "gomod",
-    "gosum",
-    "gotmpl",
-    "templ",
-    "diff",
-    "html",
-    "markdown",
-    "markdown_inline",
-    "query",
-    "python",
-    "sql",
-    "yaml",
-    "json",
-    "lua"
-}
-require('nvim-treesitter').setup()
+require('treesitter').init()
 
 require("goplements").setup({})
 require('goplements').toggle()
@@ -1116,7 +1097,6 @@ map("v", "<leader>aS", function()
   if start_line > end_line then
     start_line, end_line = end_line, start_line
   end
-  local filepath = vim.fn.expand("%:p")
   local line_ref = string.format("#L%d-%d", start_line, end_line)
 
   local chat = require("codecompanion").last_chat()
@@ -1128,7 +1108,7 @@ map("v", "<leader>aS", function()
   end
   chat:add_buf_message({
     role = require("codecompanion.config").constants.USER_ROLE,
-    content = string.format("`%s`%s", filepath, line_ref),
+    content = string.format("#{buffer}%s", line_ref),
   })
   chat.ui:open()
 end, { desc = "[S]end buffer to Companion" })

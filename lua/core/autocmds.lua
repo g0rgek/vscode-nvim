@@ -70,16 +70,6 @@ vim.api.nvim_create_autocmd('VimEnter', {
 })
 
 -- =============================================================================
--- ENABLE TREESITTER FOR EACH INSTALLED FT
--- =============================================================================
-vim.api.nvim_create_autocmd('FileType', {
-  group = vim.api.nvim_create_augroup('nvimpack-treesitter', { clear = true }),
-  callback = function(args)
-    pcall(vim.treesitter.start, args.buf)
-  end,
-})
-
--- =============================================================================
 -- ENABLE CSV RENDER
 -- =============================================================================
 vim.api.nvim_create_autocmd("FileType", {

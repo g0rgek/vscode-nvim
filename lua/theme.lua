@@ -37,10 +37,6 @@ hl(0, 'IblIndent', { fg = '#3E3E3E', bg = 'NONE', nocombine = true })
 hl(0, 'NormalFloat', { bg = 'NONE' })
 hl(0, 'FloatBorder', { bg = 'NONE' })
 
--- TreesitterContext background colors
-hl(0, 'TreesitterContext', { bg = '#2D2D2D' })
-hl(0, 'TreesitterContextLineNumber', { fg = '#5A5A5A', bg = '#2D2D2D' })
-
 -- Figdet.nvim colors
 hl(0, 'FidgetLSPName', { fg = '#9CDCFE', bg = 'NONE' })
 hl(0, 'FidgetText', { fg = '#D4D4D4', bg = 'NONE' })
