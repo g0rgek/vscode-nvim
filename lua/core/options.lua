@@ -40,6 +40,7 @@ vim.wo.cursorlineopt = 'number'
 vim.o.signcolumn = 'yes'
 vim.o.termguicolors = true
 vim.o.laststatus = 3
+vim.opt.fillchars = { eob = " " }
 
 -- Transparency for floating panes
 -- vim.opt.pumblend = 20
@@ -49,9 +50,6 @@ vim.opt.smoothscroll = true
 vim.o.cmdheight = 0
 vim.o.autoread = true
 vim.opt.guicursor = 'n-v-c-sm:block,i-ci-ve:ver25,r-cr-o:hor20'
-vim.g.db_ui_use_nvim_notify = 1
-vim.g.db_ui_disable_progress_bar = 1
-vim.g.db_ui_disable_info_notifications = 1
 
 -- =============================================================================
 -- Editing
@@ -115,6 +113,17 @@ vim.opt.foldnestmax = 3
 vim.opt.pumheight = 15
 vim.opt.pumwidth = 30
 vim.opt.completeopt = { 'menu', 'menuone', 'noselect' }
+
+
+-- =============================================================================
+-- User Packages
+-- =============================================================================
+vim.g.db_ui_use_nvim_notify = 1
+vim.g.db_ui_disable_progress_bar = 1
+vim.g.db_ui_disable_info_notifications = 1
+vim.g.gitblame_display_virtual_text = 0
+vim.g.gitblame_message_template = '<author> (<date>)'
+vim.g.gitblame_date_format = '%r'
 
 -- =============================================================================
 -- Filetype detection patches

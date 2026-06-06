@@ -9,6 +9,10 @@ vim.api.nvim_create_autocmd("LspAttach", {
   end,
 })
 
+map("n", "<leader>ca", vim.lsp.buf.code_action, {
+  desc = "[A]ction",
+})
+
 vim.lsp.enable({
   "gopls",
   -- "golangci-lint-ls",
@@ -46,6 +50,10 @@ vim.lsp.config('golangci-lint-ls', {
 		},
 	},
 })
+
+
+require("goplements").setup({})
+require('goplements').toggle()
 
 --- Toggle golangci-lint-ls diagnostics on/off, keeping gopls compiler diagnostics
 ---@param show_notify boolean|nil

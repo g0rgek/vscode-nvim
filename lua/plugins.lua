@@ -53,9 +53,6 @@ vim.pack.add({
   {
     src = "/Users/23603840/.config/nvim/plugins/fidget.nvim",
   },
-  -- {
-  --   src = "/Users/23603840/.config/nvim/plugins/claudecode.nvim",
-  -- },
   {
     src = "/Users/23603840/.config/nvim/plugins/codecompanion.nvim",
   },
@@ -107,45 +104,11 @@ vim.pack.add({
 })
 
 require('treesitter').init()
-
-require("goplements").setup({})
-require('goplements').toggle()
-
-require("which-key").setup({
-  preset = 'helix',
-  delay = 0,
-
-  win = {
-    height = {
-      max = math.huge,
-    },
-  },
-
-  icons = {
-    rules = false,
-    breadcrumb = ' ',
-    separator = '󱦰  ',
-    group = '󰹍 ',
-  },
-
-  spec = {
-    { '<leader>', group = 'Leader' },
-    { '<leader>o', group = '[O]pen' },
-    { '<leader>c', group = '[C]ode', mode = { 'n', 'x' } },
-    { '<leader>p', group = '[P]review' },
-    { '<leader>b', group = '[B]uffer' },
-    { '<leader>w', group = '[W]orkspace' },
-    { '<leader>r', group = '[R]ename' },
-    { '<leader>f', group = '[F]ind' },
-    { '<leader>u', group = '[U]i' },
-    { '<leader>g', group = '[G]it' },
-    { '<leader>t', group = '[T]erminal' },
-    { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
-    { '<leader>a', group = '[A]I' },
-    { '<leader>e', group = '[E]dgy' },
-  },
-})
-
+require('ui').init()
+require('neotree').init()
+require('git').init()
+require('underbar').init()
+require('preview').init()
 
 require("snacks").setup({
   toggle = {
@@ -196,10 +159,6 @@ require("snacks").setup({
 
 local picker = require("snacks.picker")
 
-map("n", "<leader>ca", vim.lsp.buf.code_action, {
-  desc = "[A]ction",
-})
-
 map("n", "<leader>fI", function()
   picker.lsp_implementations()
 end, {
@@ -223,16 +182,6 @@ map("n", "<leader>fD", function()
 end, {
   desc = "[D]iagnostics (all)",
 })
-
-map({ "n", "x" }, "<leader>gb", function()
-  require('core.native').gitbrowse()
-end, {
-  desc = "[B]rowse",
-})
-
-map("n", "<leader>gg", ":Neogit<cr>", {desc = "[G]it"})
-map("n", "<leader>gl", ":Neogit log<cr>", {desc = "[L]og"})
-map("n", "<leader>gd", ":DiffviewOpen<cr>", {desc = "[D]iff"})
 
 map("n", "<leader>ff", function()
   picker.files()
@@ -268,193 +217,6 @@ map("n", "gd", function()
   picker.lsp_definitions()
 end, {
   desc = "[G]oto [D]efinition",
-})
-
-
-require("tiny-inline-diagnostic").setup({
-  options = {
-    show_all_diags_on_cursorline = true,
-
-    multilines = {
-      enabled = true,
-    },
-
-    show_source = {
-      enabled = true,
-      if_many = false,
-    },
-
-    add_messages = true,
-  },
-
-  signs = {
-    diag = "●",
-    arrow = "",
-  },
-})
-
-require('nvim-web-devicons').setup({
-  variant = 'dark',
-  color_icons = true,
-  default = true,
-  override = {
-    go = {
-      icon = '󰟓',
-      color = '#519ABA',
-      name = 'Go',
-    },
-    md = {
-      icon = '',
-      color = '#519ABA',
-      name = 'Md',
-    },
-  },
-})
-
-
-vim.g.gitblame_display_virtual_text = 0
-vim.g.gitblame_message_template = '<author> (<date>)'
-vim.g.gitblame_date_format = '%r'
-
-local lualine = require("lualine")
-local git_blame = require("gitblame")
-
--- ======================
--- language version helper
--- ======================
-local function lang_version()
-  if vim.b.lang_version_cache ~= nil then
-    return vim.b.lang_version_cache
-  end
-
-  local ft = vim.bo.filetype
-  local ver = ""
-
-  if ft == "go" then
-    local out = vim.fn.system("go version"):gsub("\n", "")
-    ver = out:match("go version%s+go([%d%.]+)") or ""
-
-  elseif ft == "rust" then
-    local out = vim.fn.system("rustc --version"):gsub("\n", "")
-    ver = out:match("rustc%s+([%w%.%-]+)") or ""
-
-  elseif ft == "c" or ft == "cpp" then
-    local out = vim.fn.system("gcc --version | head -n1"):gsub("\n", "")
-    ver = out:match("gcc[^%d]*([%d%.]+)") or ""
-
-  elseif ft == "python" then
-    local out = vim.fn.system("python --version 2>&1"):gsub("\n", "")
-    ver = out:match("Python%s+([%d%.]+)") or ""
-
-    local venv = os.getenv("VIRTUAL_ENV")
-    if venv then
-      local venv_name = vim.fn.fnamemodify(venv, ":t")
-      ver = ver .. " (" .. venv_name .. ")"
-    end
-
-  elseif ft == "typst" then
-    local out = vim.fn.system("typst -V"):gsub("\n", "")
-    ver = out:match("(%d+%.%d+%.%d+)") or ""
-  end
-
-  vim.b.lang_version_cache = ver
-  return ver
-end
-
-
--- ======================
--- LSP clients
--- ======================
-local function lsp_clients()
-  local clients = vim.lsp.get_clients({ bufnr = 0 })
-  if #clients == 0 then
-    return ""
-  end
-
-  local names = {}
-  for _, c in ipairs(clients) do
-    table.insert(names, c.name)
-  end
-
-  return table.concat(names, ",")
-end
-
--- ======================
--- diagnostics
--- ======================
-local diagnostics = {
-  "diagnostics",
-  sources = { "nvim_diagnostic" },
-  sections = { "error", "warn", "info", "hint" },
-  symbols = {
-    error = " ",
-    warn = " ",
-    info = " ",
-    hint = "󰌶 ",
-  },
-  colored = false,
-  update_in_insert = false,
-  color = { fg = "#cccccc" },
-}
-
--- ======================
--- lualine setup
--- ======================
-lualine.setup({
-  options = {
-    section_separators = "",
-    component_separators = "",
-    icons_enabled = true,
-    globalstatus = true,
-
-    disabled_filetypes = {
-      statusline = { "NvimTree", "toggleterm", "terminal" },
-      winbar = { "toggleterm", "terminal" },
-    },
-  },
-
-  sections = {
-    lualine_a = { { "mode" } },
-
-    lualine_b = {
-      {
-        "branch",
-        icon = "",
-        color = { fg = "#cccccc" },
-      },
-      diagnostics,
-    },
-
-    lualine_c = {},
-
-    lualine_x = {
-      {
-        git_blame.get_current_blame_text,
-        cond = git_blame.is_blame_text_available,
-        color = { fg = "#cccccc" },
-      },
-    },
-
-    lualine_y = {
-      {
-        function()
-          return string.format(
-            "Ln %d, Col %d",
-            vim.fn.line("."),
-            vim.fn.col(".")
-          )
-        end,
-        color = { fg = "#cccccc" },
-      },
-
-      { "encoding", color = { fg = "#cccccc" } },
-      { lsp_clients, color = { fg = "#cccccc" } },
-      { "filetype", color = { fg = "#cccccc" } },
-      { lang_version, color = { fg = "#cccccc" } },
-    },
-
-    lualine_z = {},
-  },
 })
 
 
@@ -524,29 +286,6 @@ require("barbar").setup({
 
 
 -- ======================
--- neo-tree (file tree)
--- ======================
-require("neo-tree").setup({
-  close_if_last_window = true,
-  popup_border_style = "rounded",
-  enable_git_status = true,
-  enable_diagnostics = false,
-  filesystem = {
-    follow_current_file = {
-      enabled = true,
-    },
-    filtered_items = {
-      hide_dotfiles = false,
-      hide_gitignored = true,
-    },
-  },
-  window = {
-    position = "left",
-  },
-})
-
-
--- ======================
 -- time-machine (file history / undo tree)
 -- ======================
 require("time-machine").setup({
@@ -555,6 +294,7 @@ require("time-machine").setup({
     width = 50,
   },
 })
+
 
 -- ======================
 -- Sidebar panel manager (replaces edgy)
@@ -707,299 +447,13 @@ end, { desc = "[U]ndo tree" })
 
 map("n", "<leader>eg", function()
   sidebar.toggle("grpc")
-end, { desc = "[G]RPC-UI"})
+end, { desc = "[g]RPC-UI"})
 
 map("n", "<leader>eh", function()
   sidebar.toggle_all()
 end, { desc = "[H]ide/reveal" })
 
-
--- ======================
--- edgy (sidebar tabs)
--- ======================
-
--- local edgy = require("edgy")
--- edgy.setup({
---   left = {
---     -- Tab 1: File tree
---     {
---       title = "󰈙 Files",
---       ft = "neo-tree",
---       filter = function(buf)
---         return vim.b[buf].neo_tree_source == "filesystem"
---       end,
---       size = { height = 0.40 },
---     },
---     -- Tab 2: Database client (dadbod)
---     -- open() finds/creates the edgy placeholder, clears the BufWinLeave
---     -- autocmd (so enew! doesn't close the window), runs :DBUI which
---     -- reuses the window via the drawer patch (&ft == 'edgy' check),
---     -- then nils pinned_win. The pending FileType → vim.schedule callback
---     -- handles the rest — integrating the dbui window with its winbar.
---     {
---       title = "󰆼 Database",
---       ft = "dbui",
---       pinned = true,
---       collapsed = true,
---       open = function()
---         local edgy_config = require("edgy.config")
---         local dbui_view = nil
---         for _, edgebar in pairs(edgy_config.layout) do
---           for _, view in ipairs(edgebar.views) do
---             if view.ft == "dbui" then dbui_view = view break end
---           end
---         end
---         if not dbui_view then vim.cmd("DBUI") return end
---
---         -- Find or create the placeholder
---         local pw = nil
---         if dbui_view.pinned_win and vim.api.nvim_win_is_valid(dbui_view.pinned_win.win) then
---           pw = dbui_view.pinned_win.win
---         end
---         if not pw then
---           for _, w in ipairs(vim.api.nvim_list_wins()) do
---             local b = vim.api.nvim_win_get_buf(w)
---             if vim.bo[b].filetype == "edgy"
---               and vim.api.nvim_buf_get_name(b):match("Database") then
---               pw = w break
---             end
---           end
---         end
---         if not pw then
---           local any = false
---           for _, w in ipairs(vim.api.nvim_list_wins()) do
---             local f = vim.bo[vim.api.nvim_win_get_buf(w)].filetype
---             if f == "neo-tree" or f == "time-machine-list" or f == "edgy" then
---               any = true break
---             end
---           end
---           if not any then require("edgy").open("left") end
---           dbui_view:show_pinned()
---           require("edgy.layout").layout({ full = true })
---           if dbui_view.pinned_win and vim.api.nvim_win_is_valid(dbui_view.pinned_win.win) then
---             pw = dbui_view.pinned_win.win
---           end
---         end
---
---         if pw then
---           vim.api.nvim_set_current_win(pw)
---           -- Clear BufWinLeave so enew! doesn't close the window
---           pcall(vim.api.nvim_clear_autocmds, {
---             buffer = vim.api.nvim_win_get_buf(pw), event = "BufWinLeave",
---           })
---         end
---         vim.cmd("DBUI")
---
---         -- Release pinned_win. The FileType → vim.schedule(Layout.update)
---         -- will pick up the window (now ft=dbui) and set its winbar.
---         dbui_view.pinned_win = nil
---       end,
---       size = { height = 0.30 },
---     },
---     -- Tab 3: Time machine (file history / undo tree)
---     {
---       title = "󰉋 History",
---       ft = "time-machine-list",
---       pinned = true,
---       collapsed = true,
---       open = "TimeMachineToggle",
---       size = { height = 0.30 },
---     },
---   },
---
---   options = {
---     left = { size = 50 },
---   },
---
---   wo = {
---     winbar = true,
---     winfixwidth = true,
---     winfixheight = true,
---   },
---
---   animate = {
---     enabled = false,
---   },
---
---   icons = {
---     closed = "󰅀",
---     open   = "󰝰",
---   },
--- })
-
--- edgy.setup({
---   left = {
---     -- Tab 1: File tree
---     {
---       title = "󰈙 Files",
---       ft = "neo-tree",
---       filter = function(buf)
---         return vim.b[buf].neo_tree_source == "filesystem"
---       end,
---       size = { height = 0.40 },
---     },
---     -- Tab 2: Database client (dadbod)
---     {
---       title = "󰆼 Database",
---       ft = "dbui",
---       pinned = true,
---       collapsed = true,
---       open = "DBUI",
---       size = { height = 0.30 },
---     },
---     -- Tab 3: Time machine (file history / undo tree)
---     {
---       title = "󰉋 History",
---       ft = "time-machine-list",
---       pinned = true,
---       collapsed = true,
---       open = "TimeMachineToggle",
---       size = { height = 0.30 },
---     },
---   },
-
---   options = {
---     left = { size = 50 },
---   },
-
---   wo = {
---     winbar = true,
---     winfixwidth = true,
---     winfixheight = true,
---   },
-
---   animate = {
---     enabled = false,
---   },
-
---   icons = {
---     closed = "󰅀",
---     open   = "󰝰",
---   },
--- })
-
--- ======================
--- dadbod live query timer
--- ======================
--- Shows a floating elapsed-time counter near the query buffer while executing.
--- Hooks into dadbod's DBExecutePre/DBExecutePost autocommands.
 require("dadbod-timer").setup()
-
-
--- local function focus_edgy_view(ft, fallback_cmd)
---   -- If a window with this filetype is already open, focus it
---   for _, win in ipairs(vim.api.nvim_list_wins()) do
---     local buf = vim.api.nvim_win_get_buf(win)
---     if vim.bo[buf].filetype == ft then
---       vim.api.nvim_set_current_win(win)
---       return
---     end
---   end
---   -- Find the edgy view: use open_pinned() if pinned, otherwise fallback
---   local layout = require("edgy.config").layout
---   for _, edgebar in pairs(layout) do
---     for _, view in ipairs(edgebar.views) do
---       if view.ft == ft then
---         if view.pinned then
---           view.collapsed = false
---           view:open_pinned()
---         elseif fallback_cmd then
---           fallback_cmd()
---         end
---         return
---       end
---     end
---   end
--- end
---
--- map("n", "<leader>ee", function()
---   focus_edgy_view("neo-tree", function()
---     require("neo-tree.command").execute({ action = "focus", source = "filesystem" })
---   end)
--- end, { desc = "[E]xplorer (file tree)" })
---
--- map("n", "<leader>ed", function()
---   focus_edgy_view("dbui")
--- end, { desc = "[D]atabase view" })
---
--- map("n", "<leader>et", function()
---   focus_edgy_view("time-machine-list")
--- end, { desc = "[T]ime machine (file history)" })
---
--- map("n", "<leader>es", function()
---   edgy.select("left")
--- end, { desc = "[S]elect sidebar tab" })
---
--- map("n", "<leader>eh", function()
---   -- Check if sidebar is currently open by looking for edgy-managed
---   -- sidebar windows, not just any winfixwidth window (snacks.terminal
---   -- and other float/term windows also use winfixwidth).
---   local sidebar_fts = { "neo-tree", "dbui", "time-machine-list" }
---   local sidebar_open = false
---   local sidebar_width = 0
---   for _, win in ipairs(vim.api.nvim_list_wins()) do
---     local buf = vim.api.nvim_win_get_buf(win)
---     local ft = vim.bo[buf].filetype
---     if vim.tbl_contains(sidebar_fts, ft) then
---       sidebar_open = true
---       sidebar_width = sidebar_width + vim.api.nvim_win_get_width(win)
---     end
---   end
---   if sidebar_open then
---     edgy.close("left")
---     require("barbar.api").set_offset(0)
---   else
---     edgy.open("left")
---     vim.defer_fn(function()
---       require("neo-tree.command").execute({ action = "focus", source = "filesystem" })
---       local layout = require("edgy.config").layout
---       for _, edgebar in pairs(layout) do
---         for _, view in ipairs(edgebar.views) do
---           if view.ft == "time-machine-list" then
---             view.collapsed = false
---             if #view.wins > 0 then
---               view.wins[1]:show(true)
---             else
---               view:open_pinned()
---             end
---           end
---         end
---       end
---       -- Set barbar tabline offset to sidebar width
---       local sidebar_width = 0
---       for _, win in ipairs(vim.api.nvim_list_wins()) do
---         local buf = vim.api.nvim_win_get_buf(win)
---         local ft = vim.bo[buf].filetype
---         if vim.tbl_contains({ "neo-tree", "dbui", "time-machine-list" }, ft) then
---           sidebar_width = sidebar_width + vim.api.nvim_win_get_width(win)
---         end
---       end
---       if sidebar_width > 0 then
---         require("barbar.api").set_offset(sidebar_width)
---       end
---     end, 100)
---   end
--- end, { desc = "[H]ide/reveal sidebar" })
---
---
--- map("n", "<leader>ef", function()
---   local w = require("edgy.editor").get_win()
---   if w then
---     w:toggle()
---   else
---     -- Cursor is in the main area; fold the last-active edgy window
---     local layout = require("edgy.config").layout
---     for _, edgebar in pairs(layout) do
---       for _, win in ipairs(edgebar.wins) do
---         if win.visible then
---           win:toggle()
---           return
---         end
---       end
---     end
---   end
--- end, { desc = "[F]old current tab" })
-
 
 require("fidget").setup({
   progress = {
@@ -1020,21 +474,7 @@ vim.notify = require("notify")
 require("notify").setup({
   background_colour = "#1e1e1e",
 })
--- ======================
--- claudecode (Claude Code AI integration)
--- ======================
--- require("claudecode").setup({
---   refresh_buffers_key = "<leader>br",
---   integration_mode = "simple",  -- Use simple mode for qwencode/gigacode
---   terminal_cmd = vim.fn.expand(""),
---   focus_after_send = true,
--- })
---
--- map({ "n", "v" }, "<leader>as", "<cmd>ClaudeCodeSend<CR>", { desc = "[S]end to Claude" })
 
--- Claude Code and OS shell terminals (both on the right side, switchable)
--- map("n", "<leader>tc", "<cmd>ClaudeCode<CR>", { desc = "[C]laude Toggle" })
--- map("n", "<leader>tf", "<cmd>ClaudeCodeFocus<CR>", { desc = "[F]ocus Claude term" })
 
 -- ============================
 -- codecompanion (AI Assistant)
@@ -1195,24 +635,6 @@ map("n", "<leader>tl", function()
   end)
 end, { desc = "[L]ist terminals" })
 
-require("neogit").setup({
-  disable_commit_confirmation = true,
-  integrations = {
-     diffview = true,
-  }
-})
-
-require("render-markdown").setup({
-  file_types = { 'markdown', 'md', 'codecompanion' },
-  render_modes = { 'n', 'c', 't' },
-  preset = 'obsidian',
-  completions = {
-    blink = { enabled = true },
-    lsp = { enabled = true },
-  },
-})
-
-vim.api.nvim_set_keymap("n", "<leader>pm", "<CMD>RenderMarkdown toggle<CR>", { desc = "[M]arkdown" })
 
 require('blink.pairs').build():pwait()
 require("blink.pairs").setup({
@@ -1385,19 +807,3 @@ require('barbecue').setup({
 -- })
 
 require('guess-indent').setup({})
-
-require('jqscratch').setup({
-  ft = "json", "yaml", "yml",
-})
-
-map("n", "<leader>pj", function()
-  require("jqscratch").toggle()
-end, { desc = "[J]son" })
-
-require('csvview').setup({
-  ft = "csv", "dbout",
-})
-
-map("n", "<leader>pc", '<cmd>CsvViewToggle display_mode=border header_lnum=1<CR>', { desc = "[C]sv" })
-
-

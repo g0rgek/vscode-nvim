@@ -92,7 +92,6 @@ function M.context()
   vim.keymap.set('n', '[C', function()
     require('treesitter-context').go_to_context(vim.v.count1)
   end, { desc = 'Jump to context (upwards)' })
-  vim.keymap.set('n', '<leader>tc', '<cmd>TSContext toggle<cr>', { desc = 'Toggle Treesitter Context' })
 end
 
 function M.init()
