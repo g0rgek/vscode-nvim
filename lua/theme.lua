@@ -1,9 +1,3 @@
-vim.pack.add({
-  {
-    src = '/Users/23603840/.config/nvim/plugins/vscode.nvim'
-  },
-})
-
 local hl = vim.api.nvim_set_hl
 
 require("vscode").setup({

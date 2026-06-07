@@ -1,73 +1,44 @@
 vim.pack.add({
+
+  -- Theme
+  {
+    src = '/Users/23603840/.config/nvim/plugins/vscode.nvim'
+  },
+
+  -- Core utilities
+  {
+    src = "/Users/23603840/.config/nvim/plugins/plenary.nvim",
+  },
   {
     src = "/Users/23603840/.config/nvim/plugins/nvim-web-devicons",
-  },
-  {
-    src = '/Users/23603840/.config/nvim/plugins/nvim-treesitter',
-  },
-  {
-    src = '/Users/23603840/.config/nvim/plugins/nvim-treesitter-context',
-  },
-  {
-    src = '/Users/23603840/.config/nvim/plugins/which-key.nvim',
-  },
-  {
-    src = '/Users/23603840/.config/nvim/plugins/snacks.nvim'
-  },
-  {
-    src = '/Users/23603840/.config/nvim/plugins/tiny-inline-diagnostic.nvim'
-  },
-  {
-    src = '/Users/23603840/.config/nvim/plugins/goplements.nvim'
-  },
-  {
-    src = "/Users/23603840/.config/nvim/plugins/lualine.nvim",
-  },
-  {
-    src = "/Users/23603840/.config/nvim/plugins/git-blame.nvim",
-  },
-  {
-    src = "/Users/23603840/.config/nvim/plugins/conform.nvim",
-  },
-  {
-    src = "/Users/23603840/.config/nvim/plugins/barbar.nvim",
-  },
-  {
-    src = "/Users/23603840/.config/nvim/plugins/gitsigns.nvim",
   },
   {
     src = "/Users/23603840/.config/nvim/plugins/nui.nvim",
   },
   {
-    src = "/Users/23603840/.config/nvim/plugins/plenary.nvim",
+    src = "/Users/23603840/.config/nvim/plugins/nvim-navic",
   },
-  {
-    src = "/Users/23603840/.config/nvim/plugins/neo-tree.nvim",
-  },
-  {
-    src = "/Users/23603840/.config/nvim/plugins/vim-dadbod",
-  },
-  {
-    src = "/Users/23603840/.config/nvim/plugins/vim-dadbod-ui",
-  },
+
+  -- Notifications
   {
     src = "/Users/23603840/.config/nvim/plugins/fidget.nvim",
-  },
-  {
-    src = "/Users/23603840/.config/nvim/plugins/codecompanion.nvim",
   },
   {
     src = "/Users/23603840/.config/nvim/plugins/nvim-notify",
   },
   {
-    src = "/Users/23603840/.config/nvim/plugins/diffview.nvim",
+    src = '/Users/23603840/.config/nvim/plugins/tiny-inline-diagnostic.nvim'
+  },
+
+  -- Editor helpers
+  {
+    src = '/Users/23603840/.config/nvim/plugins/which-key.nvim',
   },
   {
-    src = "/Users/23603840/.config/nvim/plugins/neogit",
+    src = "/Users/23603840/.config/nvim/plugins/guess-indent.nvim",
   },
-  {
-    src = "/Users/23603840/.config/nvim/plugins/time-machine.nvim",
-  },
+
+  -- Completion
   {
     src = "/Users/23603840/.config/nvim/plugins/blink.lib",
   },
@@ -77,15 +48,68 @@ vim.pack.add({
   {
     src = "/Users/23603840/.config/nvim/plugins/blink.cmp",
   },
+
+  -- Formatting
   {
-    src = "/Users/23603840/.config/nvim/plugins/nvim-navic",
+    src = "/Users/23603840/.config/nvim/plugins/conform.nvim",
+  },
+
+  -- Treesitter
+  {
+    src = '/Users/23603840/.config/nvim/plugins/nvim-treesitter',
   },
   {
-    src = "/Users/23603840/.config/nvim/plugins/barbecue.nvim",
+    src = '/Users/23603840/.config/nvim/plugins/nvim-treesitter-context',
+  },
+
+  -- Git
+  {
+    src = "/Users/23603840/.config/nvim/plugins/git-blame.nvim",
   },
   {
-    src = "/Users/23603840/.config/nvim/plugins/guess-indent.nvim",
+    src = "/Users/23603840/.config/nvim/plugins/gitsigns.nvim",
   },
+  {
+    src = "/Users/23603840/.config/nvim/plugins/diffview.nvim",
+  },
+  {
+    src = "/Users/23603840/.config/nvim/plugins/neogit",
+  },
+  
+  -- Utilities
+  {
+    src = '/Users/23603840/.config/nvim/plugins/snacks.nvim'
+  },
+
+  -- Navigation
+  {
+    src = "/Users/23603840/.config/nvim/plugins/neo-tree.nvim",
+  },
+
+  -- Productivity
+  {
+    src = "/Users/23603840/.config/nvim/plugins/time-machine.nvim",
+  },
+
+  -- Database
+  {
+    src = "/Users/23603840/.config/nvim/plugins/vim-dadbod",
+  },
+  {
+    src = "/Users/23603840/.config/nvim/plugins/vim-dadbod-ui",
+  },
+
+  -- gRPC
+  {
+    src = "/Users/23603840/.config/nvim/plugins/grpc-ui.nvim"
+  },
+
+  -- LSP
+  {
+    src = '/Users/23603840/.config/nvim/plugins/goplements.nvim'
+  },
+
+  -- Preview
   {
     src = "/Users/23603840/.config/nvim/plugins/render-markdown.nvim"
   },
@@ -95,12 +119,24 @@ vim.pack.add({
   {
     src = "/Users/23603840/.config/nvim/plugins/csvview.nvim"
   },
+
+  -- Bottombar
   {
-    src = "/Users/23603840/.config/nvim/plugins/grpc-ui.nvim"
+    src = "/Users/23603840/.config/nvim/plugins/lualine.nvim",
   },
-  -- {
-  --   src = "/Users/23603840/.config/nvim/plugins/smolpilot.nvim"
-  -- },
+
+  -- Topbar
+  {
+    src = "/Users/23603840/.config/nvim/plugins/barbar.nvim",
+  },
+  {
+    src = "/Users/23603840/.config/nvim/plugins/barbecue.nvim",
+  },
+
+  -- AI
+  {
+    src = "/Users/23603840/.config/nvim/plugins/codecompanion.nvim",
+  }
 })
 
 require('treesitter').init()
