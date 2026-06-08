@@ -9,7 +9,7 @@ function M.base_ui()
     static = {
       enabled = true,
       char = "│",
-    }, 
+    },
     scope = {
       enabled = true,
       char = "│",
@@ -182,7 +182,7 @@ require("conform").setup({
     goimports = {
       command = "goimports",
       args = {
-	"-local", "api.sc-ci.sber.ru,stash.sigma.sbrf.ru,stash.delta.sbrf.ru",
+	      "-local", "api.sc-ci.sber.ru,stash.sigma.sbrf.ru,stash.delta.sbrf.ru",
       },
     },
   },

@@ -1,7 +1,5 @@
 local M = {}
 
-
-
 function M.productivity()
   -- Native file operations (replaces nvim-genghis)
   vim.keymap.set('n', '<leader>fr', function()

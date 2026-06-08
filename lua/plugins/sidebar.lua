@@ -1,5 +1,5 @@
 local sidebar = {}
-sidebar.width = 40
+sidebar.width = 82
 sidebar.last = "files"
 
 require("time-machine").setup({
@@ -154,27 +154,19 @@ local function find_win(ft)
 end
 
 ---Move a window to the left sidebar position and set its width.
-local function move_to_sidebar(win)
+local function move_to_sidebar(win, w)
+  w = w or sidebar.width
   vim.api.nvim_win_call(win, function()
     vim.cmd("wincmd H")
   end)
-  vim.api.nvim_win_set_width(win, sidebar.width)
+  vim.api.nvim_win_set_width(win, w)
 end
-
----Update barbar tabline offset from visible sidebar windows.
--- local function update_offset()
---   local total = 0
---   for _, p in pairs(sidebar.panels) do
---     local w = find_win(p.ft)
---     if w then total = total + vim.api.nvim_win_get_width(w) end
---   end
---   require("barbar.api").set_offset(total)
--- end
 
 -- Panel definitions ───────────────────────────────────────────────
 sidebar.panels = {
   files = {
     ft = "neo-tree",
+    width = 40,
     open = function()
       require("neo-tree.command").execute({ action = "focus", source = "filesystem" })
       local w = find_win("neo-tree")
@@ -182,7 +174,7 @@ sidebar.panels = {
         pcall(vim.api.nvim_win_call, w, function()
           vim.cmd("wincmd H")
         end)
-        vim.api.nvim_win_set_width(w, sidebar.width)
+        vim.api.nvim_win_set_width(w, sidebar.panels.files.width)
       end
     end,
     close = function()
@@ -191,26 +183,29 @@ sidebar.panels = {
   },
   database = {
     ft = "dbui",
+    width = 82,
     open = function()
       vim.cmd("DBUI")
       local w = find_win("dbui")
-      if w then move_to_sidebar(w) end
+      if w then move_to_sidebar(w, sidebar.panels.database.width) end
     end,
   },
   history = {
     ft = "history",
+    width = 40,
     open = function()
       vim.cmd("TimeMachineToggle")
       local w = find_win("history")
-      if w then move_to_sidebar(w) end
+      if w then move_to_sidebar(w, sidebar.panels.history.width) end
     end,
   },
   grpc = {
     ft = "grpcui",
+    width = 82,
     open = function()
       require('grpc-ui').open()
       local w = find_win("grpcui")
-      if w then move_to_sidebar(w) end
+      if w then move_to_sidebar(w, sidebar.panels.grpc.width) end
     end,
     close = function()
       require("grpc-ui").close()
@@ -263,29 +258,6 @@ function sidebar.toggle_all()
     sidebar.toggle(sidebar.last)
   end
 end
-
--- Persist sidebar width after manual resize ──────────────────────
-local SIDEBAR_FTS = {}
-for _, panel in pairs(sidebar.panels) do
-  SIDEBAR_FTS[panel.ft] = true
-end
-
-local augroup = vim.api.nvim_create_augroup("SidebarWidthPersist", { clear = true })
-vim.api.nvim_create_autocmd("WinScrolled", {
-  group = augroup,
-  callback = function(args)
-    local win = args.win
-    if not win then return end
-    local buf = vim.api.nvim_win_get_buf(win)
-    local ft = vim.bo[buf].filetype
-    if ft and SIDEBAR_FTS[ft] then
-      local w = vim.api.nvim_win_get_width(win)
-      if w ~= sidebar.width then
-        sidebar.width = w
-      end
-    end
-  end,
-})
 
 map("n", "<leader>ef", function()
   sidebar.toggle("files")
