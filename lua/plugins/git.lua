@@ -116,12 +116,16 @@ function M.neogit()
  vim.keymap.set("n", "<leader>gl", ":NeogitLogCurrent<cr>", {desc = "[l]og"})
 end
 
---- Initialize all git features (signs + diff)
-function M.init()
-  M.signs()
-  M.diff()
-  M.neogit()
+function M.blame()
+  require('gitblame').setup({
+    enabled = false,              -- off by default, toggle with <leader>ga
+    date_format = '%r',          -- relative dates ("3 days ago")
+    highlight_group = 'NonText', -- subtle styling
+  })
+
+  vim.keymap.set('n', '<leader>ga', ':GitBlameToggle<CR>', { desc = 'Toggle git [a]nnotation (inlay hints)' })
 end
 
 return M
+
 

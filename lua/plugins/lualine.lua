@@ -1,6 +1,3 @@
-local M = {}
-
-
 -- ======================
 -- language version helper
 -- ======================
@@ -79,67 +76,63 @@ local diagnostics = {
   color = { fg = "#cccccc" },
 }
 
-function M.init()
-  local git_blame = require("gitblame")
-	local lualine = require("lualine")
+local git_blame = require("gitblame")
+local lualine = require("lualine")
 
-	lualine.setup({
-	  options = {
-	    section_separators = "",
-	    component_separators = "",
-	    icons_enabled = true,
-	    globalstatus = true,
+lualine.setup({
+  options = {
+    section_separators = "",
+    component_separators = "",
+    icons_enabled = true,
+    globalstatus = true,
 
-	    disabled_filetypes = {
-	      statusline = { "NvimTree", "toggleterm", "terminal" },
-	      winbar = { "toggleterm", "terminal" },
-	    },
-	  },
+    disabled_filetypes = {
+      statusline = { "NvimTree", "toggleterm", "terminal" },
+      winbar = { "toggleterm", "terminal" },
+    },
+  },
 
-	  sections = {
-	    lualine_a = { { "mode" } },
+  sections = {
+    lualine_a = { { "mode" } },
 
-	    lualine_b = {
-	      {
-		"branch",
-		icon = "",
-		color = { fg = "#cccccc" },
-	      },
-	      diagnostics,
-	    },
+    lualine_b = {
+      {
+  "branch",
+  icon = "",
+  color = { fg = "#cccccc" },
+      },
+      diagnostics,
+    },
 
-	    lualine_c = {},
+    lualine_c = {},
 
-	    lualine_x = {
-	      {
-		git_blame.get_current_blame_text,
-		cond = git_blame.is_blame_text_available,
-		color = { fg = "#cccccc" },
-	      },
-	    },
+    lualine_x = {
+      {
+  git_blame.get_current_blame_text,
+  cond = git_blame.is_blame_text_available,
+  color = { fg = "#cccccc" },
+      },
+    },
 
-	    lualine_y = {
-	      {
-		function()
-		  return string.format(
-		    "Ln %d, Col %d",
-		    vim.fn.line("."),
-		    vim.fn.col(".")
-		  )
-		end,
-		color = { fg = "#cccccc" },
-	      },
+    lualine_y = {
+      {
+  function()
+    return string.format(
+      "Ln %d, Col %d",
+      vim.fn.line("."),
+      vim.fn.col(".")
+    )
+  end,
+  color = { fg = "#cccccc" },
+      },
 
-	      { "encoding", color = { fg = "#cccccc" } },
-	      { lsp_clients, color = { fg = "#cccccc" } },
-	      { "filetype", color = { fg = "#cccccc" } },
-	      { lang_version, color = { fg = "#cccccc" } },
-	    },
+      { "encoding", color = { fg = "#cccccc" } },
+      { lsp_clients, color = { fg = "#cccccc" } },
+      { "filetype", color = { fg = "#cccccc" } },
+      { lang_version, color = { fg = "#cccccc" } },
+    },
 
-	    lualine_z = {},
-	  },
-	})
-end
-
-return M
+    lualine_z = {},
+  },
+})
 

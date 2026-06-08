@@ -35,10 +35,4 @@ function M.md()
  vim.api.nvim_set_keymap("n", "<leader>pm", "<CMD>RenderMarkdown toggle<CR>", { desc = "[M]arkdown" })
 end
 
-function M.init()
-	M.json()
-	M.csv()
-	M.md()
-end
-
 return M

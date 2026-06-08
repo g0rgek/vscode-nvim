@@ -57,8 +57,11 @@ local function set_blink_pairs_hl()
   hl(0, 'BlinkPairsBlue', { fg = '#569CD6', default = true })
   hl(0, 'BlinkPairsUnmatched', { fg = '#ff007c', default = true })
   hl(0, 'BlinkPairsMatchParen', { link = 'MatchParen', default = true })
+  hl(0, 'BlinkIndentScope', { fg = '#707070', default = true })
 end
+
 set_blink_pairs_hl()
+
 vim.api.nvim_create_autocmd('ColorScheme', {
   group = vim.api.nvim_create_augroup('user_blink_pairs_hl', {}),
   callback = set_blink_pairs_hl,

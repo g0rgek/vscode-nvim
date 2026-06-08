@@ -12,6 +12,10 @@
       "rev": "5ee69ea52492fa038b3a1cd8de55edffe205c77d",
       "src": "/Users/23603840/.config/nvim/plugins/blink.cmp"
     },
+    "blink.indent": {
+      "rev": "8a7270fc6bc9575f58b47fe527ed2d40cc55e7db",
+      "src": "/Users/23603840/.config/nvim/plugins/blink.indent"
+    },
     "blink.lib": {
       "rev": "2cb62890cee636fe46722d03b7b2331e54fb3755",
       "src": "/Users/23603840/.config/nvim/plugins/blink.lib"
@@ -71,6 +75,10 @@
     "guess-indent.nvim": {
       "rev": "84a4987ff36798c2fc1169cbaff67960aed9776f",
       "src": "/Users/23603840/.config/nvim/plugins/guess-indent.nvim"
+    },
+    "heirline.nvim": {
+      "rev": "b84ebe11bd49ede1a20dc02484f90696b9d7e288",
+      "src": "/Users/23603840/.config/nvim/plugins/heirline.nvim"
     },
     "jq-playground.nvim": {
       "rev": "a3416e0938f3f418f0a86ca62d4f189ce5d1d4fd",
@@ -151,6 +159,10 @@
     "vim-dadbod-ui": {
       "rev": "07e92e22114cc5b1ba4938d99897d85b58e20475",
       "src": "/Users/23603840/.config/nvim/plugins/vim-dadbod-ui"
+    },
+    "vscode": {
+      "rev": "aa1102a7e15195c9cca22730b09224a7f7745ba8",
+      "src": "/Users/23603840/.config/nvim/plugins/vscode.nvim"
     },
     "vscode.nvim": {
       "rev": "aa1102a7e15195c9cca22730b09224a7f7745ba8",

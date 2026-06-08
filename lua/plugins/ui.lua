@@ -136,14 +136,5 @@ function M.quickfile()
   -- The real effect is the absence of any blocking BufReadPost work here.
 end
 
-function M.init()
-	M.dev_icons()
-	M.tiny_diagnostics()
-	M.which_key()
-	M.native()
-	M.bigfile()
-	M.quickfile()
-end
-
 return M
 

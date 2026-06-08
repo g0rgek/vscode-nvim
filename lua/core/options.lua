@@ -79,6 +79,7 @@ vim.opt.swapfile = false
 vim.opt.backup = false
 vim.opt.writebackup = false
 vim.opt.shortmess:append 'c'
+vim.opt.shortmess:append 'W'
 vim.opt.synmaxcol = 500
 vim.opt.regexpengine = 0  -- auto-select best regex engine
 
@@ -124,6 +125,7 @@ vim.g.db_ui_disable_info_notifications = 1
 vim.g.gitblame_display_virtual_text = 0
 vim.g.gitblame_message_template = '<author> (<date>)'
 vim.g.gitblame_date_format = '%r'
+vim.g.barbar_auto_setup = false
 
 -- =============================================================================
 -- Filetype detection patches
