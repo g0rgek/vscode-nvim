@@ -73,8 +73,27 @@ map("v", "<leader>aS", function()
 end, { desc = "[S]end buffer to Companion" })
 map("n", "<leader>ac", "<cmd>CodeCompanionChat Toggle<CR>", { desc = "[C]ompanion toggle" })
 map("n", "<leader>al", "<cmd>CodeCompanionAction list<CR>", { desc = "[L]ist Companions" })
-map("n", "<C-q>", "<cmd>CodeCompanionChat Toggle<cr>", { desc = "Hide Chat" })
 
+-- Helper: find and close the chat buffer, kill gigacode --acp process
+local function close_chat_and_kill_acp()
+  -- Close the CodeCompanion chat buffer if open
+  local chat = require("codecompanion").last_chat()
+  if chat and chat.bufnr and vim.api.nvim_buf_is_valid(chat.bufnr) then
+    local win = vim.fn.bufwinid(chat.bufnr)
+    if win ~= -1 then
+      vim.api.nvim_win_close(win, true)
+    end
+    vim.api.nvim_buf_delete(chat.bufnr, { force = true })
+  end
+
+  -- Kill gigacode --acp process
+  pcall(vim.fn.system, "pkill -f 'gigacode.*--acp'")
+  vim.notify("Chat closed, ACP process stopped", vim.log.levels.INFO)
+end
+
+-- Override <C-q> to also kill the process
+map("n", "<C-q>", close_chat_and_kill_acp, { desc = "Close Chat & stop ACP" })
+map("n", "<leader>ad", close_chat_and_kill_acp, { desc = "[D]ismiss Chat & stop ACP" })
 
 local progress = require("fidget.progress")
 local handlers = {}
@@ -104,3 +123,6 @@ vim.api.nvim_create_autocmd("User", {
     end
   end
 })
+
+
+
