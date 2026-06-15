@@ -138,8 +138,12 @@ function M.lazygit_log()
     vim.notify('lazygit not found in PATH', vim.log.levels.ERROR)
     return
   end
-  -- Open lazygit on current file's directory with log view
-  local dir = vim.fn.expand('%:p:h')
+  -- Resolve to git worktree root so lazygit always opens a valid repo
+  local dir = vim.fn.systemlist('git rev-parse --show-toplevel')[1]
+  if not dir or dir == '' then
+    vim.notify('Not inside a git repository', vim.log.levels.ERROR)
+    return
+  end
   open_terminal('lazygit -p "' .. dir .. '" log', { title = 'Git Log' })
 end
 
@@ -320,3 +324,4 @@ function M.scratch_select()
 end
 
 return M
+

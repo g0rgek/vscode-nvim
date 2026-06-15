@@ -30,8 +30,8 @@ map('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 -- =============================================================================
 
 -- Window resizing
-map('n', '<', [[<cmd>vertical resize +5<cr>]], { desc = 'Increase vertical size' })
-map('n', '>', [[<cmd>vertical resize -5<cr>]], { desc = 'Decrease vertical size' })
+map('n', '>', [[<cmd>vertical resize +5<cr>]], { desc = 'Increase vertical size' })
+map('n', '<', [[<cmd>vertical resize -5<cr>]], { desc = 'Decrease vertical size' })
 map('n', '+', [[<cmd>horizontal resize +2<cr>]], { desc = 'Increase horizontal size' })
 map('n', '-', [[<cmd>horizontal resize -2<cr>]], { desc = 'Decrease horizontal size' })
 map('n', '=', [[<cmd>wincmd =<cr>]], { desc = 'Equalize window sizes' })

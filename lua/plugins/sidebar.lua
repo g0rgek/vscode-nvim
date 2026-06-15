@@ -9,6 +9,14 @@ require("time-machine").setup({
   },
 })
 
+require("dbui").setup({
+  use_nerd_fonts = true
+})
+
+require("grpc-ui").setup({
+  short_buffer_names = true
+})
+
 local function sort_migrations_by_number(a, b)
   -- directories always come first
   if a.type ~= b.type then

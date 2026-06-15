@@ -65,19 +65,22 @@ function M.which_key()
 
    spec = {
      { '<leader>', group = 'Leader' },
-     { '<leader>o', group = '[O]pen' },
-     { '<leader>c', group = '[C]ode', mode = { 'n', 'x' } },
-     { '<leader>p', group = '[P]review' },
-     { '<leader>b', group = '[B]uffer' },
-     { '<leader>w', group = '[W]orkspace' },
-     { '<leader>r', group = '[R]ename' },
-     { '<leader>f', group = '[F]ind' },
-     { '<leader>u', group = '[U]i' },
-     { '<leader>g', group = '[G]it' },
-     { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
-     { '<leader>t', group = '[T]erminal' },
-     { '<leader>a', group = '[A]I' },
-     { '<leader>e', group = '[E]dgy' },
+     { '<leader>o', group =  '[O]pen' },
+     { '<leader>ot', group =  '[T]riforce' },
+     { '<leader>c', group =  '[C]ode', mode = { 'n', 'x' } },
+     { '<leader>ct', group = '[T]est' },
+     { '<leader>p', group =  '[P]review' },
+     { '<leader>b', group =  '[B]uffer' },
+     { '<leader>w', group =  '[W]orkspace' },
+     { '<leader>r', group =  '[R]ename' },
+     { '<leader>f', group =  '[F]ind' },
+     { '<leader>u', group =  '[U]i' },
+     { '<leader>g', group =  '[G]it' },
+     { '<leader>h', group =  'Git [H]unk', mode = { 'n', 'v' } },
+     { '<leader>t', group =  '[T]erminal' },
+     { '<leader>a', group =  '[A]I' },
+     { '<leader>e', group =  '[E]dgy' },
+     { '<leader>l', group =  '[L]eetcode' },
    },
  })
 end
@@ -86,6 +89,10 @@ function M.native()
   -- Native replacements for snacks.nvim features
   -- bigfile and quickfile are loaded via separate VimEnter registry entries.
   local native = require('core.native')
+
+  -- Lazygit
+  vim.keymap.set('n', '<leader>gL', native.lazygit_log,          { desc = '[G]it [L]og' })
+  vim.keymap.set('n', '<leader>gG', native.lazygit,              { desc = 'Lazy [G]it' })
 
   -- Git operations
   vim.keymap.set('n', '<leader>gb', native.gitbrowse,            { desc = '[b]rowse' })

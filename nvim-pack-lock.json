@@ -1,5 +1,9 @@
 {
   "plugins": {
+    "LuaSnip": {
+      "rev": "20aa1821ba1e4f5bf5d838dc739775c1b3764233",
+      "src": "/home/gorgek/.config/nvim/plugins/LuaSnip"
+    },
     "barbar.nvim": {
       "rev": "a4bef5b4fc1f064f2f673172252028eae18191c9",
       "src": "/Users/23603840/.config/nvim/plugins/barbar.nvim"
@@ -40,6 +44,10 @@
       "rev": "bf176a6bf0dc106381474fce78f89020a2168142",
       "src": "/Users/23603840/.config/nvim/plugins/csvview.nvim"
     },
+    "dbui.nvim": {
+      "rev": "5818e1e3550aab0341491dd24f8450ea52d9f298",
+      "src": "/Users/23603840/.config/nvim/plugins/dbui.nvim"
+    },
     "diffview.nvim": {
       "rev": "4516612fe98ff56ae0415a259ff6361a89419b0a",
       "src": "/Users/23603840/.config/nvim/plugins/diffview.nvim"
@@ -51,6 +59,10 @@
     "fidget.nvim": {
       "rev": "82404b196e73a00b1727a91903beef5ddc319d22",
       "src": "/Users/23603840/.config/nvim/plugins/fidget.nvim"
+    },
+    "friendly-snippets": {
+      "rev": "377f70fab04b54b2c0df6997abd8bdb9cab35486",
+      "src": "/home/gorgek/.config/nvim/plugins/friendly-snippets"
     },
     "gemini-cli.nvim": {
       "rev": "d76aae69debd771ac0bd07e74d70b1c5dac25270",
@@ -88,6 +100,10 @@
       "rev": "d279205148ddc735204f479a357fe0995407c990",
       "src": "/Users/23603840/.config/nvim/plugins/jqscratch.nvim"
     },
+    "leetcode.nvim": {
+      "rev": "3f3db1ace306528d262e466783724023be1de54b",
+      "src": "/home/gorgek/.config/nvim/plugins/leetcode.nvim"
+    },
     "lualine.nvim": {
       "rev": "131a558e13f9f28b15cd235557150ccb23f89286",
       "src": "/Users/23603840/.config/nvim/plugins/lualine.nvim"
@@ -104,6 +120,14 @@
       "rev": "99326a1310fb2d616b455d2fd16d01bf00682f06",
       "src": "/Users/23603840/.config/nvim/plugins/neogit"
     },
+    "neotest": {
+      "rev": "8088cbc68704ee4d84e379f42a961a7c92d8517d",
+      "src": "/home/gorgek/.config/nvim/plugins/neotest"
+    },
+    "neotest-golang": {
+      "rev": "f4cab1fa3f1496ba0cb93816b8f000d533253e74",
+      "src": "/home/gorgek/.config/nvim/plugins/neotest-golang"
+    },
     "nui.nvim": {
       "rev": "de740991c12411b663994b2860f1a4fd0937c130",
       "src": "/Users/23603840/.config/nvim/plugins/nui.nvim"
@@ -111,6 +135,10 @@
     "nvim-navic": {
       "rev": "f5eba192f39b453675d115351808bd51276d9de5",
       "src": "/Users/23603840/.config/nvim/plugins/nvim-navic"
+    },
+    "nvim-nio": {
+      "rev": "197733aa2ddf8362c7f780f610545f0944cd98fd",
+      "src": "/home/gorgek/.config/nvim/plugins/nvim-nio"
     },
     "nvim-notify": {
       "rev": "8701bece920b38ea289b457f902e2ad184131a5d",
@@ -152,13 +180,25 @@
       "rev": "6bdbc9a2f5a846ff5fc55a998ff97c0e2968b7e5",
       "src": "/Users/23603840/.config/nvim/plugins/tiny-inline-diagnostic.nvim"
     },
+    "triforce.nvim": {
+      "rev": "8523b9c89319a7608cfe2e98fcc822a58b87280e",
+      "src": "/home/gorgek/.config/nvim/plugins/triforce.nvim"
+    },
     "vim-dadbod": {
       "rev": "6d1d41da4873a445c5605f2005ad2c68c99d8770",
       "src": "/Users/23603840/.config/nvim/plugins/vim-dadbod"
     },
+    "vim-dadbod-completion": {
+      "rev": "841797f7a2893f10b6357776aad37165b06975ea",
+      "src": "/Users/23603840/.config/nvim/plugins/vim-dadbod-completion"
+    },
     "vim-dadbod-ui": {
       "rev": "07e92e22114cc5b1ba4938d99897d85b58e20475",
       "src": "/Users/23603840/.config/nvim/plugins/vim-dadbod-ui"
+    },
+    "volt": {
+      "rev": "4d357f9f3596eb608302b56200ca64260c70ad28",
+      "src": "/home/gorgek/.config/nvim/plugins/volt"
     },
     "vscode": {
       "rev": "aa1102a7e15195c9cca22730b09224a7f7745ba8",

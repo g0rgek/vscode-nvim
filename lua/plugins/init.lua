@@ -18,6 +18,12 @@ vim.pack.add({
   {
     src = "/Users/23603840/.config/nvim/plugins/nvim-navic",
   },
+  {
+    src = "~/.local/share/nvim/site/pack/core/opt/volt",
+  },
+  {
+    src = "~/.local/share/nvim/site/pack/core/opt/nvim-nio",
+  },
 
   -- Notifications
   {
@@ -28,6 +34,11 @@ vim.pack.add({
   },
   {
     src = '/Users/23603840/.config/nvim/plugins/tiny-inline-diagnostic.nvim'
+  },
+
+  -- Achievements
+  {
+    src = "~/.local/share/nvim/site/pack/core/opt/triforce.nvim",
   },
 
   -- Editor helpers
@@ -47,6 +58,14 @@ vim.pack.add({
   },
   {
     src = "/Users/23603840/.config/nvim/plugins/blink.cmp",
+  },
+
+  -- Snippets
+  {
+    src =  "~/.local/share/nvim/site/pack/core/opt/LuaSnip",
+  },
+  {
+    src =  "~/.local/share/nvim/site/pack/core/opt/friendly-snippets",
   },
 
   -- Formatting
@@ -99,7 +118,10 @@ vim.pack.add({
     src = "/Users/23603840/.config/nvim/plugins/vim-dadbod",
   },
   {
-    src = "/Users/23603840/.config/nvim/plugins/vim-dadbod-ui",
+    src = "/Users/23603840/.config/nvim/plugins/vim-dadbod-completion",
+  },
+  {
+    src = "/Users/23603840/.config/nvim/plugins/dbui.nvim",
   },
 
   -- gRPC
@@ -124,9 +146,6 @@ vim.pack.add({
   },
 
   -- Statusbar
-  -- {
-  --   src = "/Users/23603840/.config/nvim/plugins/lualine.nvim",
-  -- },
   {
     src = "/Users/23603840/.config/nvim/plugins/heirline.nvim",
   },
@@ -142,7 +161,21 @@ vim.pack.add({
   -- AI
   {
     src = "/Users/23603840/.config/nvim/plugins/codecompanion.nvim",
-  }
+  },
+
+  -- Testing
+  {
+    src = "~/.local/share/nvim/site/pack/core/opt/neotest",
+  },
+  {
+    src = "~/.local/share/nvim/site/pack/core/opt/neotest-golang",
+  },
+
+  -- Leetcode
+  {
+    src = "~/.local/share/nvim/site/pack/core/opt/leetcode.nvim",
+  },
+
 }, { confirm = false, load = function() end })
 
 -- =============================================================================
@@ -176,14 +209,11 @@ pack.setup({
   -- -------------------------------------------------------------------------
   -- UIEnter (non-blocking — loads after first frame renders)
   -- -------------------------------------------------------------------------
-  -- { mod = 'lualine',    event = 'UIEnter',                          packadd = { 'git-blame.nvim', 'lualine.nvim', 'nvim-web-devicons' } },
-  { mod = 'heirline',   event = 'UIEnter', packadd = { 'heirline.nvim', 'nvim-web-devicons' } },
+  { mod = 'heirline',   event = 'UIEnter', packadd = { 'heirline.nvim', 'nvim-web-devicons', 'volt', 'triforce.nvim' } },
   { mod = 'ui',         fn = 'which_key',  event = 'UIEnter',                         packadd = { 'which-key.nvim' } },
   { mod = 'ui',         fn = 'tiny_diagnostics',  event = 'UIEnter',                  packadd = { 'tiny-inline-diagnostic.nvim' } },
-  -- { mod = 'navigation',                    event = 'UIEnter',                         packadd = { 'neo-tree.nvim', 'nui.nvim' } },
-  { mod = 'editing',    fn = 'base_ui',    event = 'UIEnter',                         packadd = { 'blink.lib', 'blink.indent', 'blink.pairs' } },
-  { mod = 'topbar',     fn = 'barbecue',   event = { 'UIEnter'                     }, packadd = { 'nvim-navic', 'barbecue.nvim' } },
-
+  { mod = 'editing',    fn = 'base_ui',    event = 'UIEnter',                         packadd = { 'blink.lib', 'blink.indent', 'blink.pairs', 'LuaSnip', 'friendly-snippets' } },
+  { mod = 'topbar',     fn = 'barbecue',   event = 'UIEnter',                         packadd = { 'nvim-navic', 'barbecue.nvim' } },
   -- -------------------------------------------------------------------------
   -- BufReadPre / BufNewFile (core file-level features)
   -- -------------------------------------------------------------------------
@@ -191,7 +221,6 @@ pack.setup({
   { mod = 'lsp',                         event = { 'BufReadPre', 'BufNewFile' }, packadd = { 'goplements.nvim' } },
   { mod = 'git',        fn = 'signs',    event = { 'BufReadPre', 'BufNewFile' }, packadd = { 'gitsigns.nvim', 'plenary.nvim' } },
   { mod = 'treesitter', fn = 'context',  event = { 'BufReadPre', 'BufNewFile' }, packadd = { 'nvim-treesitter-context' } },
-  -- { mod = 'topbar',     fn = 'barbar',   event = { 'BufAdd'                   }, packadd = { 'nvim-web-devicons', 'barbar.nvim' } },
 
   -- -------------------------------------------------------------------------
   -- InsertEnter / CmdlineEnter (completion)
@@ -210,6 +239,7 @@ pack.setup({
   -- Picker
   { mod = 'editing', fn = 'picker', keys = {
       { '<leader>ff',   desc = '[F]iles' },
+      { '<leader>ol',   desc = '[L]eetcode' },
       { '<leader>fs',   desc = '[s]ymbols buffer' },
       { '<leader>fS',   desc = '[S]ymbols global' },
       { '<leader>fR',   desc = '[R]eferences' },
@@ -220,6 +250,17 @@ pack.setup({
       {         'gd',   desc = '[G]oto [D]efinition' },
       { '<leader>tl',   desc = '[L]ist' },
     }, packadd = { 'snacks.nvim' } },
+  -- Testing
+  { mod = 'testing', keys = {
+      { '<leader>ctn',   desc = '[N]earest' },
+      { '<leader>ctf',   desc = '[F]ile' },
+      { '<leader>cts',   desc = '[S]ummary' },
+      { '<leader>ctl',   desc = '[L]ast' },
+    }, packadd = { 'nvim-nio', 'plenary.nvim', 'neotest', 'neotest-golang' } },
+  -- Leetcode
+  { mod = 'leetcode', keys = {
+      { '<leader>ol', desc = '[L]eetcode' }
+  }, packadd = { 'plenary.nvim', 'nui.nvim', 'snacks.nvim', 'leetcode.nvim' } },
   -- Sidebar
   { mod = 'sidebar', keys = {
       { '<leader>ef',   desc = '[F]iles' },
@@ -227,7 +268,7 @@ pack.setup({
       { '<leader>eg',   desc = '[G]RPC' },
       { '<leader>et',   desc = '[T]ime machine' },
       { '<leader>eh',   desc = '[H]ide' },
-    }, packadd = {'neo-tree.nvim', 'nui.nvim', 'vim-dadbod', 'vim-dadbod-ui', 'time-machine.nvim', 'grpc-ui.nvim' } },
+    }, packadd = {'nui.nvim','blink.lib', 'blink.cmp', 'neo-tree.nvim', 'vim-dadbod', 'dbui.nvim', 'vim-dadbod-completion', 'time-machine.nvim', 'grpc-ui.nvim' } },
   -- Git Diff
   { mod = 'git', fn = 'diff', keys = {
       { '<leader>gd',   desc = '[Diff] against index' },
@@ -247,7 +288,7 @@ pack.setup({
   -- AI
   { mod = 'ai', keys = {
       { '<leader>ac',   desc = '[C]ode Companion Toggle' },
-      { '<leader>as',   desc = '[S]end to companion' },
+      { '<leader>as',   desc = '[S]end to companion', mode = 'v' },
       { '<leader>al',   desc = '[L]ist companions' },
     }, packadd = { 'codecompanion.nvim', 'blink.cmp', 'blink.lib' } },
   { mod = 'preview', fn = 'json', keys = {
@@ -260,9 +301,8 @@ pack.setup({
   -- -------------------------------------------------------------------------
   -- Deferred (idle — load after defer ms)
   -- -------------------------------------------------------------------------
-  { mod = 'editing', fn = 'guess_indent',  defer = 1,  packadd = { 'guess-indent.nvim' } },
-  { mod = 'notification',                  defer = 1,  packadd = { 'fidget.nvim', 'nvim-notify' } },
-  { mod = 'preview', fn = 'md',            defer = 1,  packadd = { 'render-markdown.nvim' } },
+  { mod = 'editing', fn = 'guess_indent',  defer = 1,    packadd = { 'guess-indent.nvim' } },
+  { mod = 'notification',                  defer = 1,    packadd = { 'fidget.nvim', 'nvim-notify' } },
+  { mod = 'preview', fn = 'md',            defer = 1,    packadd = { 'render-markdown.nvim' } },
+  { mod = 'achievements',                  defer = 500,  packadd = { 'volt', 'triforce.nvim' } },
 })
-
-

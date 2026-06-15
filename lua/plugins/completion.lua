@@ -102,13 +102,13 @@ require("blink.cmp").setup({
   },
 	sources = {
 		default = { "snippets", "lsp", "path", "buffer" },
-    providers = {
+                providers = {
 			snippets = {
 				min_keyword_length = 2,
 				score_offset = 4,
 			},
 			lsp = {
-				min_keyword_length = 3,
+				min_keyword_length = 1,
 				score_offset = 3,
 			},
 			path = {
@@ -125,7 +125,7 @@ require("blink.cmp").setup({
 		},
 	},
 
-	snippets = { preset = "default" },
+	snippets = { preset = "luasnip" },
 
 	fuzzy = {
 		implementation = "rust",
@@ -136,3 +136,5 @@ require("blink.cmp").setup({
 		enabled = false,
 	},
 })
+
+require("luasnip.loaders.from_vscode").lazy_load()

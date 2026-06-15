@@ -4,6 +4,7 @@ local heirline = require("heirline")
 local conditions = require("heirline.conditions")
 local utils = require("heirline.utils")
 local devicons = require("nvim-web-devicons")
+local triforce = require("heirline.components.triforce")
 
 -- ---------------------------------------------------------------------------
 -- Colors
@@ -40,6 +41,7 @@ local function setup_colors()
 	}
 end
 
+
 heirline.load_colors(setup_colors)
 
 vim.api.nvim_create_augroup("Heirline", { clear = true })
@@ -49,6 +51,14 @@ vim.api.nvim_create_autocmd("ColorScheme", {
 	end,
 	group = "Heirline",
 })
+
+-- Update statusline automatically
+do
+	local tick = vim.uv.new_timer()
+	tick:start(0,1000,vim.schedule_wrap(function()
+		vim.cmd("redrawstatus")
+	end))
+end
 
 -- ---------------------------------------------------------------------------
 -- Async ahead/behind fetcher (debounced + cached)
@@ -295,7 +305,7 @@ local GitDiff = {
 	init = function(self)
 		self.status_dict = vim.b.gitsigns_status_dict
 	end,
-	update = { "User", pattern = "GitSignsUpdate" },
+	update = { "BufEnter", "User", pattern = "GitSignsUpdate" },
 	{
 		provider = function(self)
 			local count = self.status_dict.added or 0
@@ -711,13 +721,14 @@ local DefaultStatusline = {
 	Mode,
 	Space,
 	GitBranch,
-	GitDiff,
+	Diagnostics,
+	-- GitDiff,
 	MacroRec,
 	Align,
 	SearchCount,
 	Space,
-	Diagnostics,
-	Space,
+	triforce.Component,
+	-- Space,
 	Spell,
 	Paste,
 	Space,
@@ -1126,7 +1137,7 @@ local TabPages = {
 	utils.make_tablist(Tabpage),
 }
 
--- Neo-tree sidebar offset
+-- Sidebar offset
 local TabLineOffset = {
 	condition = function(self)
 		local win = vim.api.nvim_tabpage_list_wins(0)[1]
@@ -1190,7 +1201,7 @@ vim.api.nvim_set_hl(0, "TabLineFill", { bg = "#1f1f1f" })
 -- ===========================================================================
 heirline.setup({
 	statusline = StatusLines,
-	winbar = WinBar,
+	winbar = nil,
 	tabline = TabLine,
 	opts = {
 		disable_winbar_cb = function(args)
@@ -1209,5 +1220,4 @@ heirline.setup({
 		end,
 	},
 })
-
 

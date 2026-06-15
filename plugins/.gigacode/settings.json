@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(nvim *)",
+      "Bash(luacheck *)",
+      "Bash(lua *)",
+      "Bash(cp *)",
+      "Bash(grep *)",
+      "Bash(true)"
+    ]
+  },
+  "$version": 3
+}

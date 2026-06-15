@@ -28,7 +28,8 @@ function M.base()
     "regex", "go", "gomod", "gosum",
     "gotmpl", "templ", "diff", "html",
     "markdown", "markdown_inline", "query",
-    "python", "sql", "yaml", "json", "lua"
+    "python", "sql", "yaml", "json", "lua",
+    "comment"
     }
 
     -- local installed = require('nvim-treesitter.config').get_installed()
@@ -56,7 +57,7 @@ function M.context()
     line_numbers = false,
     multiline_threshold = 15,
     trim_scope = 'outer',
-    mode = 'cursor',
+    mode = 'topline',
     throttle = true,
     separator = nil,
     zindex = 20,

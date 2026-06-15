@@ -117,11 +117,13 @@ vim.opt.completeopt = { 'menu', 'menuone', 'noselect' }
 
 
 -- =============================================================================
--- User Packages
+-- User Plugins
 -- =============================================================================
 vim.g.db_ui_use_nvim_notify = 1
 vim.g.db_ui_disable_progress_bar = 1
 vim.g.db_ui_disable_info_notifications = 1
+vim.g.db_ui_use_nerd_fonts = 1
+vim.g.db_ui_save_location = "~/.local/share/db_ui"
 vim.g.gitblame_display_virtual_text = 0
 vim.g.gitblame_message_template = '<author> (<date>)'
 vim.g.gitblame_date_format = '%r'
