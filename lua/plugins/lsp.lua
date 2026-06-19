@@ -23,6 +23,9 @@ vim.lsp.enable({
 vim.lsp.config("gopls", {
   settings = {
     gopls = {
+      analyses = {
+        modernize = true,
+      },
       hints = {
         assignVariableTypes = true,
         compositeLiteralFields = true,

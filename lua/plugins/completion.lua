@@ -39,7 +39,7 @@ require("blink.cmp").setup({
 
 	completion = {
 		documentation = {
-			auto_show = false,
+			auto_show = true,
 			auto_show_delay_ms = 500,
 			window = {
 				border = "rounded",
@@ -101,14 +101,27 @@ require("blink.cmp").setup({
     enabled = false,
   },
 	sources = {
-		default = { "snippets", "lsp", "path", "buffer" },
+		default = { "lsp", "snippets", "path", "buffer" },
                 providers = {
+			lsp = {
+				min_keyword_length = 0,
+				score_offset = 4,
+				-- transform_items = function(ctx, items)
+				-- 	for _, item in ipairs(items) do
+				-- 		if item.detail and item.detail ~= "" then
+				-- 			if item.labelDetails == nil then
+				-- 				item.labelDetails = {}
+				-- 			end
+				-- 			if item.labelDetails.description == nil then
+				-- 				item.labelDetails.description = item.detail
+				-- 			end
+				-- 		end
+				-- 	end
+				-- 	return items
+				-- end,
+			},
 			snippets = {
 				min_keyword_length = 2,
-				score_offset = 4,
-			},
-			lsp = {
-				min_keyword_length = 1,
 				score_offset = 3,
 			},
 			path = {

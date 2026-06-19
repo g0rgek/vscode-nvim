@@ -27,9 +27,6 @@ vim.pack.add({
 
   -- Notifications
   {
-    src = "/Users/23603840/.config/nvim/plugins/fidget.nvim",
-  },
-  {
     src = "/Users/23603840/.config/nvim/plugins/nvim-notify",
   },
   {
@@ -106,6 +103,9 @@ vim.pack.add({
   -- Navigation
   {
     src = "/Users/23603840/.config/nvim/plugins/neo-tree.nvim",
+  },
+  {
+    src = "/Users/23603840/.config/nvim/plugins/grug-far.nvim",
   },
 
   -- Productivity
@@ -266,9 +266,10 @@ pack.setup({
       { '<leader>ef',   desc = '[F]iles' },
       { '<leader>ed',   desc = '[D]atabase' },
       { '<leader>eg',   desc = '[G]RPC' },
-      { '<leader>et',   desc = '[T]ime machine' },
-      { '<leader>eh',   desc = '[H]ide' },
-    }, packadd = {'nui.nvim','blink.lib', 'blink.cmp', 'neo-tree.nvim', 'vim-dadbod', 'dbui.nvim', 'vim-dadbod-completion', 'time-machine.nvim', 'grpc-ui.nvim' } },
+      { '<leader>eu',   desc = '[U]ndo' },
+      { '<leader>et',   desc = '[T]oggle' },
+      { '<leader>er',   desc = '[R]eplace' },
+    }, packadd = {'nui.nvim','blink.lib', 'blink.cmp', 'neo-tree.nvim', 'vim-dadbod', 'dbui.nvim', 'vim-dadbod-completion', 'time-machine.nvim', 'grpc-ui.nvim', 'grug-far.nvim' } },
   -- Git Diff
   { mod = 'git', fn = 'diff', keys = {
       { '<leader>gd',   desc = '[Diff] against index' },
@@ -302,7 +303,7 @@ pack.setup({
   -- Deferred (idle — load after defer ms)
   -- -------------------------------------------------------------------------
   { mod = 'editing', fn = 'guess_indent',  defer = 1,    packadd = { 'guess-indent.nvim' } },
-  { mod = 'notification',                  defer = 1,    packadd = { 'fidget.nvim', 'nvim-notify' } },
+  { mod = 'notification',                  defer = 1,    packadd = { 'nvim-notify' } },
   { mod = 'preview', fn = 'md',            defer = 1,    packadd = { 'render-markdown.nvim' } },
   { mod = 'achievements',                  defer = 500,  packadd = { 'volt', 'triforce.nvim' } },
 })

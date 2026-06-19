@@ -95,19 +95,19 @@ end
 map("n", "<C-q>", close_chat_and_kill_acp, { desc = "Close Chat & stop ACP" })
 map("n", "<leader>ad", close_chat_and_kill_acp, { desc = "[D]ismiss Chat & stop ACP" })
 
-local progress = require("fidget.progress")
-local handlers = {}
-local group = vim.api.nvim_create_augroup("CodeCompanionFidget", {})
+vim.g.codecompanion_status = { active = false }
+local group = vim.api.nvim_create_augroup("CodeCompanionHooks", {})
 
 vim.api.nvim_create_autocmd("User", {
   pattern = "CodeCompanionRequestStarted",
   group = group,
   callback = function(e)
-    handlers[e.data.id] = progress.handle.create({
-      title = "CodeCompanion",
+    vim.g.codecompanion_status = {
+      active = true,
+      adapter = e.data.adapter.formatted_name,
       message = "Thinking...",
-      lsp_client = {name = e.data.adapter.formatted_name},
-    })
+    }
+    vim.cmd("redrawstatus")
   end
 })
 
@@ -115,14 +115,16 @@ vim.api.nvim_create_autocmd("User", {
   pattern = "CodeCompanionRequestFinished",
   group = group,
   callback = function(e)
-    local h = handlers[e.data.id]
-    if h then
-      h.message = e.data.status == "success" and "Done" or "Failed"
-      h:finish()
-      handlers[e.data.id] = nil
-    end
+    vim.g.codecompanion_status = {
+      active = true,
+      message = e.data.status == "success" and "Done" or "Failed"
+    }
+    vim.cmd("redrawstatus")
+    -- Clear after a short delay so the user can see the result
+    vim.defer_fn(function()
+      vim.g.codecompanion_status.active = false
+      vim.cmd("redrawstatus")
+    end, 2000)
   end
 })
-
-
 

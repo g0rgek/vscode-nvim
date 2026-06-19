@@ -17,6 +17,10 @@ require("grpc-ui").setup({
   short_buffer_names = true
 })
 
+require('grug-far').setup({
+  headerMaxWidth = 80
+})
+
 local function sort_migrations_by_number(a, b)
   -- directories always come first
   if a.type ~= b.type then
@@ -141,7 +145,7 @@ require('neo-tree').setup({
 
 -- Create named placeholder buffers (once) ─────────────────────────
 sidebar.bufs = {}
-for _, key in ipairs({"files", "database", "history", "grpc"}) do
+for _, key in ipairs({"files", "database", "history", "grpc", "grug"}) do
   local buf = vim.api.nvim_create_buf(false, true)
   vim.api.nvim_buf_set_name(buf, "sidebar://" .. key)
   vim.bo[buf].buftype = "nofile"
@@ -219,6 +223,43 @@ sidebar.panels = {
       require("grpc-ui").close()
     end
   },
+  grug = {
+    ft = "grug-far",
+    width = 82,
+    open = function()
+      require('grug-far').toggle_instance({
+        instanceName = "sidebar-grug",
+        staticTitle = "Find & Replace",
+        windowCreationCommand = 'topleft vsplit',
+        transient = false,
+        startInInsertMode = false,
+        disableBufferLineNumbers = true,
+        showCompactInputs = true,
+        showInputsTopPadding = false,
+        showInputsBottomPadding = false,
+        folding = { foldlevel = 1, foldcolumn = '0' },
+        openTargetWindow = { preferredLocation = 'right' },
+      })
+      local w = find_win("grug-far")
+      if w then
+        pcall(vim.api.nvim_win_call, w, function()
+          vim.cmd("wincmd H")
+        end)
+        vim.api.nvim_win_set_width(w, sidebar.panels.grug.width)
+      end
+    end,
+    close = function()
+      require('grug-far').hide_instance("sidebar-grug")
+      -- Mark the grug buffer as unlisted so it doesn't stay in bufferline
+      local buf = vim.iter(vim.api.nvim_list_bufs()):find(function(b)
+        return vim.bo[b].filetype == "grug-far"
+          and vim.api.nvim_buf_is_valid(b)
+      end)
+      if buf then
+        vim.api.nvim_set_option_value("buflisted", false, { buf = buf })
+      end
+    end
+  },
 }
 
 ---Close all sidebar panel windows.
@@ -267,6 +308,14 @@ function sidebar.toggle_all()
   end
 end
 
+-- Close sidebar on nvim exit
+vim.api.nvim_create_autocmd("QuitPre", {
+  callback = function()
+    sidebar.close_all()
+  end
+})
+
+-- Keybinds
 map("n", "<leader>ef", function()
   sidebar.toggle("files")
 end, { desc = "[F]iles" })
@@ -275,14 +324,21 @@ map("n", "<leader>ed", function()
   sidebar.toggle("database")
 end, { desc = "[D]atabase" })
 
-map("n", "<leader>et", function()
+map("n", "<leader>eu", function()
   sidebar.toggle("history")
-end, { desc = "[T]ime machine" })
+end, { desc = "[U]ndo" })
 
 map("n", "<leader>eg", function()
   sidebar.toggle("grpc")
 end, { desc = "[G]RPC"})
 
-map("n", "<leader>eh", function()
+map("n", "<leader>er", function()
+  sidebar.toggle("grug")
+end, { desc = "[R]eplace"})
+
+map("n", "<leader>et", function()
   sidebar.toggle_all()
-end, { desc = "[H]ide/reveal" })
+end, { desc = "[T]oggle" })
+
+
+

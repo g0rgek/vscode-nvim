@@ -547,6 +547,24 @@ local LSPActive = {
 }
 
 -- ---------------------------------------------------------------------------
+-- CodeCompanion status
+-- ---------------------------------------------------------------------------
+local CodeCompanionStatus = {
+	condition = function()
+		local s = vim.g.codecompanion_status
+		return s and s.active
+	end,
+	provider = function()
+		local s = vim.g.codecompanion_status
+		if not s then return "" end
+		local adapter = s.adapter and (s.adapter .. " ") or ""
+		local msg = s.message or ""
+		return " " .. adapter .. msg .. ""
+	end,
+	hl = { fg = "lavender", bold = true }
+}
+
+-- ---------------------------------------------------------------------------
 -- Badges (flat: colored FG, no bg)
 -- ---------------------------------------------------------------------------
 local Badges = {
@@ -737,6 +755,8 @@ local DefaultStatusline = {
 	Location,
 	Space,
 	LSPActive,
+	Space,
+	CodeCompanionStatus,
 	Space,
 	RightInfoIsland,
 }
@@ -1157,6 +1177,9 @@ local TabLineOffset = {
 			return true
 		elseif vim.bo[bufnr].filetype == "history" then
 			self.title = "History"
+			return true
+		elseif vim.bo[bufnr].filetype == "grug-far" then
+			self.title = "Find & Replace"
 			return true
 		end
 	end,

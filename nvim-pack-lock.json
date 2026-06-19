@@ -84,6 +84,10 @@
       "rev": "d8ae725df9c5cf2a20108b14f9db6a59b13504a1",
       "src": "/Users/23603840/.config/nvim/plugins/grpc-ui.nvim"
     },
+    "grug-far.nvim": {
+      "rev": "e078abe066039ffbdb8cf67bb26c9ba54429bbcf",
+      "src": "/Users/23603840/.config/nvim/plugins/grug-far.nvim"
+    },
     "guess-indent.nvim": {
       "rev": "84a4987ff36798c2fc1169cbaff67960aed9776f",
       "src": "/Users/23603840/.config/nvim/plugins/guess-indent.nvim"
