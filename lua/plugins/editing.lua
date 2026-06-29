@@ -20,7 +20,7 @@ function M.base_ui()
     }
   })
 
-	require('blink.pairs').build():pwait()
+	-- require('blink.pairs').build():pwait()
 	require("blink.pairs").setup({
 		highlights = {
 			matchparen = { enabled = true },
@@ -44,13 +44,13 @@ function M.picker()
 
 	-- Keybinds
 	local picker = require("snacks.picker")
-	vim.keymap.set("n", "<leader>fI", function()
+	vim.keymap.set("n", "<leader>fi", function()
 	  picker.lsp_implementations()
 	end, {
 	  desc = "[I]mplementations",
 	})
 
-	vim.keymap.set("n", "<leader>fR", function()
+	vim.keymap.set("n", "<leader>fr", function()
 	  picker.lsp_references()
 	end, {
 	  desc = "[R]eferences",
@@ -74,7 +74,7 @@ function M.picker()
 	  desc = "[F]iles",
 	})
 
-	vim.keymap.set("n", "<leader>fG", function()
+	vim.keymap.set("n", "<leader>fg", function()
 	  picker.grep()
 	end, {
 	  desc = "[G]rep",
@@ -106,7 +106,7 @@ function M.picker()
 
   vim.keymap.set("n", "<leader>tt", function()
     require("snacks").terminal.focus(nil, {
-      win = { position = "right" },
+      win = { position = "right", wo = { winbar = "" } },
       env = vim.v.count1 > 1 and { SNACKS_TERM = tostring(vim.v.count1) } or nil,
       count = vim.v.count1 > 1 and vim.v.count1 or nil,
       keys = {
@@ -128,7 +128,7 @@ function M.picker()
         },
       },
     })
-  end, { desc = "[T]erminal (shell) (count = new)" })
+  end, { desc = "[T]erminal" })
 
   -- List and switch between all running terminals
   vim.keymap.set("n", "<leader>tl", function()

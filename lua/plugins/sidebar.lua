@@ -203,12 +203,16 @@ sidebar.panels = {
     end,
   },
   history = {
-    ft = "history",
+    ft = "time-machine-list",
     width = 40,
     open = function()
       vim.cmd("TimeMachineToggle")
-      local w = find_win("history")
+      local w = find_win("time-machine-list")
       if w then move_to_sidebar(w, sidebar.panels.history.width) end
+    end,
+    close = function()
+      local w = find_win("time-machine-list")
+      if w then pcall(vim.api.nvim_win_close, w, true) end
     end,
   },
   grpc = {
@@ -339,6 +343,7 @@ end, { desc = "[R]eplace"})
 map("n", "<leader>et", function()
   sidebar.toggle_all()
 end, { desc = "[T]oggle" })
+
 
 
 

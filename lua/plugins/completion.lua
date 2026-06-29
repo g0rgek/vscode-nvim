@@ -1,4 +1,4 @@
-require('blink.cmp').build():pwait()
+-- require('blink.cmp').build():pwait()
 require("blink.cmp").setup({
 	keymap = {
 		preset = "super-tab",
@@ -106,19 +106,6 @@ require("blink.cmp").setup({
 			lsp = {
 				min_keyword_length = 0,
 				score_offset = 4,
-				-- transform_items = function(ctx, items)
-				-- 	for _, item in ipairs(items) do
-				-- 		if item.detail and item.detail ~= "" then
-				-- 			if item.labelDetails == nil then
-				-- 				item.labelDetails = {}
-				-- 			end
-				-- 			if item.labelDetails.description == nil then
-				-- 				item.labelDetails.description = item.detail
-				-- 			end
-				-- 		end
-				-- 	end
-				-- 	return items
-				-- end,
 			},
 			snippets = {
 				min_keyword_length = 2,
@@ -129,7 +116,7 @@ require("blink.cmp").setup({
 				score_offset = 2,
 			},
 			buffer = {
-				min_keyword_length = 3,
+				min_keyword_length = 4,
 				score_offset = 1,
 			},
 		},
@@ -142,7 +129,7 @@ require("blink.cmp").setup({
 
 	fuzzy = {
 		implementation = "rust",
-		sorts = { "label", "kind", "score" },
+		sorts = { "score", "label", "kind" },
 	},
 
 	signature = {

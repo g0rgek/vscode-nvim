@@ -5,6 +5,7 @@ function M.signs()
   local gitsigns = require('gitsigns')
 
   gitsigns.setup({
+    max_file_length = 50000,
     on_attach = function(bufnr)
       local function map(mode, l, r, opts)
         opts = opts or {}

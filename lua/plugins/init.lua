@@ -19,10 +19,10 @@ vim.pack.add({
     src = "/Users/23603840/.config/nvim/plugins/nvim-navic",
   },
   {
-    src = "~/.local/share/nvim/site/pack/core/opt/volt",
+    src = "/Users/23603840/.config/nvim/plugins/volt",
   },
   {
-    src = "~/.local/share/nvim/site/pack/core/opt/nvim-nio",
+    src = "/Users/23603840/.config/nvim/plugins/nvim-nio",
   },
 
   -- Notifications
@@ -35,7 +35,7 @@ vim.pack.add({
 
   -- Achievements
   {
-    src = "~/.local/share/nvim/site/pack/core/opt/triforce.nvim",
+    src = "/Users/23603840/.config/nvim/plugins/triforce.nvim",
   },
 
   -- Editor helpers
@@ -59,10 +59,10 @@ vim.pack.add({
 
   -- Snippets
   {
-    src =  "~/.local/share/nvim/site/pack/core/opt/LuaSnip",
+    src =  "/Users/23603840/.config/nvim/plugins/LuaSnip",
   },
   {
-    src =  "~/.local/share/nvim/site/pack/core/opt/friendly-snippets",
+    src =  "/Users/23603840/.config/nvim/plugins/friendly-snippets",
   },
 
   -- Formatting
@@ -165,15 +165,15 @@ vim.pack.add({
 
   -- Testing
   {
-    src = "~/.local/share/nvim/site/pack/core/opt/neotest",
+    src = "/Users/23603840/.config/nvim/plugins/neotest",
   },
   {
-    src = "~/.local/share/nvim/site/pack/core/opt/neotest-golang",
+    src = "/Users/23603840/.config/nvim/plugins/neotest-golang",
   },
 
   -- Leetcode
   {
-    src = "~/.local/share/nvim/site/pack/core/opt/leetcode.nvim",
+    src = "/Users/23603840/.config/nvim/plugins/leetcode.nvim",
   },
 
 }, { confirm = false, load = function() end })
@@ -240,15 +240,16 @@ pack.setup({
   { mod = 'editing', fn = 'picker', keys = {
       { '<leader>ff',   desc = '[F]iles' },
       { '<leader>ol',   desc = '[L]eetcode' },
-      { '<leader>fs',   desc = '[s]ymbols buffer' },
-      { '<leader>fS',   desc = '[S]ymbols global' },
-      { '<leader>fR',   desc = '[R]eferences' },
-      { '<leader>fI',   desc = '[I]mplenentations' },
+      { '<leader>fs',   desc = '[s]ymbols (buffer)' },
+      { '<leader>fS',   desc = '[S]ymbols (all)' },
+      { '<leader>fr',   desc = '[R]eferences' },
+      { '<leader>fi',   desc = '[I]mplenentations' },
       { '<leader>fd',   desc = '[d]iagnostics buffer' },
-      { '<leader>fD',   desc = '[D]iagnostics global' },
+      { '<leader>fD',   desc = '[D]iagnostics (all)' },
       { '<leader>fg',   desc = '[g]rep' },
       {         'gd',   desc = '[G]oto [D]efinition' },
       { '<leader>tl',   desc = '[L]ist' },
+      { '<leader>tt',   desc = '[T]erminal' },
     }, packadd = { 'snacks.nvim' } },
   -- Testing
   { mod = 'testing', keys = {
@@ -278,13 +279,14 @@ pack.setup({
     }, packadd = { 'diffview.nvim', 'plenary.nvim' } },
   -- Tools
   { mod = 'tools', fn = 'productivity', keys = {
-      { '<leader>us',   desc = 'Session Restore' },
-      { '<leader>ud',   desc = "Don't Save Session" },
-      { '<leader>fr',   desc = 'File Rename' },
-      { '<leader>fd',   desc = 'File Duplicate' },
-      { '<leader>fn',   desc = 'File New' },
-      { '<leader>fx',   desc = 'File Move' },
-      { '<leader>fc',   desc = 'File Copy Path' },
+      { '<leader>ss',   desc = 'Session Save' },
+      { '<leader>sr',   desc = 'Session Restore' },
+      { '<leader>Fr',   desc = 'File Rename' },
+      { '<leader>Fd',   desc = 'File Duplicate' },
+      { '<leader>Fn',   desc = 'File New' },
+      { '<leader>Fm',   desc = 'File Move' },
+      { '<leader>Fc',   desc = 'File Copy Path' },
+      { '<leader>Fc',   desc = 'File Copy Path' },
     } },
   -- AI
   { mod = 'ai', keys = {
@@ -292,18 +294,19 @@ pack.setup({
       { '<leader>as',   desc = '[S]end to companion', mode = 'v' },
       { '<leader>al',   desc = '[L]ist companions' },
     }, packadd = { 'codecompanion.nvim', 'blink.cmp', 'blink.lib' } },
+  -- Preview
   { mod = 'preview', fn = 'json', keys = {
       { '<leader>pj',   desc = '[J]son' },
     }, packadd = { 'jqscratch.nvim' } },
   { mod = 'preview', fn = 'csv', keys = {
       { '<leader>pc',   desc = '[C]sv' },
     }, packadd = { 'csvview.nvim' } },
+  { mod = 'preview', fn = 'md', event = "Filetype", pattern = {'md', 'markdown', 'codecompanion'}, packadd = { 'render-markdown.nvim' } },
 
   -- -------------------------------------------------------------------------
   -- Deferred (idle — load after defer ms)
   -- -------------------------------------------------------------------------
   { mod = 'editing', fn = 'guess_indent',  defer = 1,    packadd = { 'guess-indent.nvim' } },
   { mod = 'notification',                  defer = 1,    packadd = { 'nvim-notify' } },
-  { mod = 'preview', fn = 'md',            defer = 1,    packadd = { 'render-markdown.nvim' } },
-  { mod = 'achievements',                  defer = 500,  packadd = { 'volt', 'triforce.nvim' } },
+  -- { mod = 'achievements',                  defer = 500,  packadd = { 'volt', 'triforce.nvim' } },
 })

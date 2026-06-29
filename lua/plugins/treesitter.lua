@@ -1,8 +1,18 @@
 local M = {}
 
 function M.base()
-  -- nvim-treesitter (main branch — Neovim 0.12+)
-  require('nvim-treesitter').setup {}
+  require('nvim-treesitter').setup {
+    indent = {
+      enable = false,
+    },
+    incremental_selection = {
+      enable = false,
+    },
+    highlight = {
+      enable = true,
+      additional_vim_regex_highlighting = false,
+    },
+  }
 
   -- Register htmlangular filetype → angular parser
   vim.treesitter.language.register('angular', 'htmlangular')
@@ -93,11 +103,6 @@ function M.context()
   vim.keymap.set('n', '[C', function()
     require('treesitter-context').go_to_context(vim.v.count1)
   end, { desc = 'Jump to context (upwards)' })
-end
-
-function M.init()
-  M.base()
-  M.context()
 end
 
 return M

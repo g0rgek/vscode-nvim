@@ -80,6 +80,7 @@ vim.opt.backup = false
 vim.opt.writebackup = false
 vim.opt.shortmess:append 'c'
 vim.opt.shortmess:append 'W'
+vim.opt.shortmess:append 'I'
 vim.opt.synmaxcol = 500
 vim.opt.regexpengine = 0  -- auto-select best regex engine
 
@@ -101,8 +102,8 @@ vim.o.equalalways = false
 -- =============================================================================
 -- Folding
 -- =============================================================================
-vim.o.foldmethod = 'expr'
-vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+vim.o.foldmethod = 'indent'
+-- vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 vim.o.foldlevel = 99
 vim.o.foldlevelstart = 99
 vim.o.foldenable = true

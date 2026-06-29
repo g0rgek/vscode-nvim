@@ -55,7 +55,7 @@ vim.api.nvim_create_autocmd("ColorScheme", {
 -- Update statusline automatically
 do
 	local tick = vim.uv.new_timer()
-	tick:start(0,1000,vim.schedule_wrap(function()
+	tick:start(0,5000,vim.schedule_wrap(function()
 		vim.cmd("redrawstatus")
 	end))
 end
@@ -1164,19 +1164,16 @@ local TabLineOffset = {
 		local bufnr = vim.api.nvim_win_get_buf(win)
 		self.winid = win
 		if vim.bo[bufnr].filetype == "neo-tree" then
-			self.title = "Files"
+			self.title = "Explorer"
 			return true
 		elseif vim.bo[bufnr].filetype == "dbui" then
 			self.title = "Database"
 			return true
-		elseif vim.bo[bufnr].filetype == "timemachine" then
-			self.title = "Time-Machine"
+		elseif vim.bo[bufnr].filetype == "time-machine-list" then
+			self.title = "History"
 			return true
 		elseif vim.bo[bufnr].filetype == "grpcui" then
 			self.title = "gRPC"
-			return true
-		elseif vim.bo[bufnr].filetype == "history" then
-			self.title = "History"
 			return true
 		elseif vim.bo[bufnr].filetype == "grug-far" then
 			self.title = "Find & Replace"

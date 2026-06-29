@@ -5,6 +5,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
     -- causing a visible flash/delay when opening buffers
     if client then
       client.server_capabilities.semanticTokensProvider = nil
+      client.server_capabilities.documentHighlightProvider = nil
     end
   end,
 })
@@ -17,7 +18,8 @@ vim.lsp.enable({
   "gopls",
   -- "golangci-lint-ls",
   "json-language-server",
-  "yaml-language-server"
+  "yaml-language-server",
+  "buf_ls"
 })
 
 vim.lsp.config("gopls", {
@@ -28,12 +30,12 @@ vim.lsp.config("gopls", {
       },
       hints = {
         assignVariableTypes = true,
-        compositeLiteralFields = true,
-        compositeLiteralTypes = true,
+        -- compositeLiteralFields = true,
+        -- compositeLiteralTypes = true,
         constantValues = true,
         functionTypeParameters = true,
         parameterNames = true,
-        rangeVariableTypes = true,
+        -- rangeVariableTypes = true,
       },
     },
   },

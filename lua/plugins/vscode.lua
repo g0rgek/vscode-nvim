@@ -61,8 +61,44 @@ local function set_blink_pairs_hl()
 end
 
 set_blink_pairs_hl()
-
 vim.api.nvim_create_autocmd('ColorScheme', {
   group = vim.api.nvim_create_augroup('user_blink_pairs_hl', {}),
   callback = set_blink_pairs_hl,
 })
+
+local sidebar_bg = "#181818"
+
+local sidebar_fts = {
+  'neo-tree', 'dbui', 'time-machine-list', 'grpcui',
+  'grug-far', 'codecompanion', 'dbout', 'snacks_terminal'
+}
+
+local function set_sidebar_hl()
+  hl(0, 'SidebarNormal', { bg = sidebar_bg, default = true })
+  hl(0, 'NeoTreeNormal', { bg = sidebar_bg, default = true })
+  hl(0, 'NeoTreeNormalNC', { bg = sidebar_bg, default = true })
+  hl(0, 'NeoTreeIndentMarker', { bg = sidebar_bg, default = true })
+  hl(0, 'TimeMachineNormal', { bg = sidebar_bg, default = true })
+  hl(0, 'CodeCompanionNormal', { bg = sidebar_bg, default = true })
+  hl(0, 'SnacksTermNormal', { bg = sidebar_bg, default = true })
+end
+
+set_sidebar_hl()
+vim.api.nvim_create_autocmd('ColorScheme', {
+  group = vim.api.nvim_create_augroup('user_sidebar_hl', {}),
+  callback = set_sidebar_hl,
+})
+
+vim.api.nvim_create_autocmd({ 'WinEnter', 'BufWinEnter', 'FileType' }, {
+  pattern = "*",
+  callback = function()
+    if vim.tbl_contains(sidebar_fts, vim.bo.filetype) then
+      vim.wo.winhighlight = 'Normal:SidebarNormal,NormalNC:SidebarNormal'
+    else
+      vim.wo.winhighlight = ''
+    end
+  end,
+})
+
+vim.api.nvim_set_hl(0, "@keyword.range.go", { fg = c.vscPink })
+vim.api.nvim_set_hl(0, "@keyword.package.go", { fg = c.vscBlue })

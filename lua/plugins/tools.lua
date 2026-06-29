@@ -2,7 +2,7 @@ local M = {}
 
 function M.productivity()
   -- Native file operations (replaces nvim-genghis)
-  vim.keymap.set('n', '<leader>fr', function()
+  vim.keymap.set('n', '<leader>Fr', function()
     local old = vim.fn.expand('%:p')
     local old_rel = vim.fn.expand('%:t')
     vim.ui.input({ prompt = 'Rename to: ', default = old_rel }, function(new_name)
@@ -15,9 +15,9 @@ function M.productivity()
         vim.notify('Rename failed: ' .. new_path, vim.log.levels.ERROR)
       end
     end)
-  end, { desc = '[F]ile [R]ename' })
+  end, { desc = '[R]ename' })
 
-  vim.keymap.set('n', '<leader>fd', function()
+  vim.keymap.set('n', '<leader>Fd', function()
     local src = vim.fn.expand('%:p')
     local base = vim.fn.expand('%:t:r')
     local ext  = vim.fn.expand('%:e')
@@ -33,17 +33,17 @@ function M.productivity()
         vim.notify('Duplicate failed: ' .. tostring(err), vim.log.levels.ERROR)
       end
     end)
-  end, { desc = '[F]ile [D]uplicate' })
+  end, { desc = '[D]uplicate' })
 
-  vim.keymap.set('n', '<leader>fn', function()
+  vim.keymap.set('n', '<leader>Fn', function()
     local dir = vim.fn.expand('%:p:h')
     vim.ui.input({ prompt = 'New file: ', default = dir .. '/' }, function(path)
       if not path or path == '' then return end
       vim.cmd('edit ' .. vim.fn.fnameescape(path))
     end)
-  end, { desc = '[F]ile [N]ew' })
+  end, { desc = '[N]ew' })
 
-  vim.keymap.set('n', '<leader>fx', function()
+  vim.keymap.set('n', '<leader>Fm', function()
     local old = vim.fn.expand('%:p')
     vim.ui.input({ prompt = 'Move/rename to: ', default = old }, function(new_path)
       if not new_path or new_path == '' or new_path == old then return end
@@ -57,19 +57,26 @@ function M.productivity()
         vim.notify('Move failed: ' .. new_path, vim.log.levels.ERROR)
       end
     end)
-  end, { desc = '[F]ile move and rename' })
+  end, { desc = '[M]ove & rename' })
 
-  vim.keymap.set('n', '<leader>fc', function()
+  vim.keymap.set('n', '<leader>Fc', function()
     local path = vim.fn.expand('%:p')
     vim.fn.setreg('+', path)
     vim.notify('Copied: ' .. path, vim.log.levels.INFO)
-  end, { desc = '[F]ile path [C]opy' })
+  end, { desc = '[C]opy path' })
 
   -- Native session management (replaces persistence.nvim)
   local session_dir = vim.g._native_session_dir
     or (vim.fn.stdpath('data') .. '/sessions')
 
-  vim.keymap.set('n', '<leader>us', function()
+  vim.keymap.set('n', '<leader>ss', function()
+    local f = session_dir .. '/last.vim'
+    vim.fn.mkdir(session_dir, 'p')
+    vim.cmd('mksession! ' .. vim.fn.fnameescape(f))
+    vim.notify('Session saved', vim.log.levels.INFO)
+  end, { desc = '[S]ave' })
+
+  vim.keymap.set('n', '<leader>sr', function()
     local f = session_dir .. '/last.vim'
     if vim.fn.filereadable(f) == 1 then
       vim.cmd('source ' .. vim.fn.fnameescape(f))
@@ -77,7 +84,7 @@ function M.productivity()
     else
       vim.notify('No saved session found', vim.log.levels.WARN)
     end
-  end, { desc = '[U]tility [S]ession restore' })
+  end, { desc = '[R]estore' })
 
   vim.keymap.set('n', '<leader>ud', function()
     if vim.g._session_disable then
@@ -87,3 +94,4 @@ function M.productivity()
 end
 
 return M
+

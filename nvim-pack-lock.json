@@ -64,10 +64,6 @@
       "rev": "377f70fab04b54b2c0df6997abd8bdb9cab35486",
       "src": "/home/gorgek/.config/nvim/plugins/friendly-snippets"
     },
-    "gemini-cli.nvim": {
-      "rev": "d76aae69debd771ac0bd07e74d70b1c5dac25270",
-      "src": "/Users/23603840/.config/nvim/plugins/gemini-cli.nvim"
-    },
     "git-blame.nvim": {
       "rev": "5c536e2d4134d064aa3f41575280bc8a2a0e03d7",
       "src": "/Users/23603840/.config/nvim/plugins/git-blame.nvim"
