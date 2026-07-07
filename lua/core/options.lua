@@ -50,6 +50,9 @@ vim.opt.smoothscroll = true
 vim.o.cmdheight = 0
 vim.o.autoread = true
 vim.opt.guicursor = 'n-v-c-sm:block,i-ci-ve:ver25,r-cr-o:hor20'
+vim.opt.tabstop = 4
+vim.opt.shiftwidth = 4
+vim.opt.softtabstop = 4
 
 -- =============================================================================
 -- Editing
@@ -131,13 +134,15 @@ vim.g.gitblame_date_format = '%r'
 vim.g.barbar_auto_setup = false
 
 -- =============================================================================
--- Filetype detection patches
+-- Filetype detection patches (deferred — avoids eager require('vim.filetype'))
 -- =============================================================================
-vim.filetype.add {
-  pattern = {
-    ['.*/.*%.component%.html'] = 'htmlangular',
-  },
-}
+vim.schedule(function()
+  vim.filetype.add {
+    pattern = {
+      ['.*/.*%.component%.html'] = 'htmlangular',
+    },
+  }
+end)
 
 -- =============================================================================
 -- Rounded borders for all floating windows

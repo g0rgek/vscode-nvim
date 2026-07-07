@@ -106,10 +106,18 @@ function M.picker()
 
   vim.keymap.set("n", "<leader>tt", function()
     require("snacks").terminal.focus(nil, {
-      win = { position = "right", wo = { winbar = "" } },
+      win = {
+        position = "right",
+        wo = { winbar = "" },
+        on_win = function(self)
+          -- Force dark background immediately (SidebarNormal is `#181818`)
+          vim.wo[self.win].winhighlight = "Normal:SidebarNormal,NormalNC:SidebarNormal"
+        end,
+      },
       env = vim.v.count1 > 1 and { SNACKS_TERM = tostring(vim.v.count1) } or nil,
       count = vim.v.count1 > 1 and vim.v.count1 or nil,
       keys = {
+        q = "hide",
         term_normal = {
           "<esc>",
           function(self)
@@ -129,6 +137,20 @@ function M.picker()
       },
     })
   end, { desc = "[T]erminal" })
+
+  vim.keymap.set({'n', 't'}, '<C-q>', function()
+    local cur_buf = vim.api.nvim_get_current_buf()
+    for _, term in ipairs(require("snacks").terminal.list()) do
+      if term.buf == cur_buf then
+        -- Exit terminal mode first if in terminal mode
+        if vim.api.nvim_get_mode().mode:match('^t') then
+          vim.cmd("stopinsert")
+        end
+        term:hide()
+        return
+      end
+    end
+  end, { desc = "Close Snacks Terminal" })
 
   -- List and switch between all running terminals
   vim.keymap.set("n", "<leader>tl", function()

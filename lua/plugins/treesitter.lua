@@ -58,7 +58,6 @@ function M.base()
 end
 
 function M.context()
-  -- nvim-treesitter-context
   require('treesitter-context').setup({
     enable = true,
     multiwindow = false,

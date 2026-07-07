@@ -50,7 +50,7 @@ require("codecompanion").setup({
   },
 })
 
-map("v", "<leader>as", "<cmd>CodeCompanionChat Add<CR>", { desc = "[S]end selection to Companion" })
+map("v", "<leader>as", "<cmd>CodeCompanionChat<CR>", { desc = "[S]end selection to Companion" })
 map("v", "<leader>aS", function()
   local start_line, end_line = vim.fn.line("v"), vim.fn.line(".")
   if start_line > end_line then

@@ -152,9 +152,6 @@ vim.pack.add({
 
   -- Topbar
   {
-    src = "/Users/23603840/.config/nvim/plugins/barbar.nvim",
-  },
-  {
     src = "/Users/23603840/.config/nvim/plugins/barbecue.nvim",
   },
 
@@ -213,14 +210,16 @@ pack.setup({
   { mod = 'ui',         fn = 'which_key',  event = 'UIEnter',                         packadd = { 'which-key.nvim' } },
   { mod = 'ui',         fn = 'tiny_diagnostics',  event = 'UIEnter',                  packadd = { 'tiny-inline-diagnostic.nvim' } },
   { mod = 'editing',    fn = 'base_ui',    event = 'UIEnter',                         packadd = { 'blink.lib', 'blink.indent', 'blink.pairs', 'LuaSnip', 'friendly-snippets' } },
-  { mod = 'topbar',     fn = 'barbecue',   event = 'UIEnter',                         packadd = { 'nvim-navic', 'barbecue.nvim' } },
+  -- { mod = 'topbar',     fn = 'barbecue',   event = 'UIEnter',                         packadd = { 'nvim-navic', 'barbecue.nvim' } },
   -- -------------------------------------------------------------------------
   -- BufReadPre / BufNewFile (core file-level features)
+  -- Order matters: lightweight frames first so context renders before
+  -- gitsigns/LSP (which can block the autocmd queue for several ms).
   -- -------------------------------------------------------------------------
   { mod = 'treesitter', fn = 'base',     event = { 'BufReadPre', 'BufNewFile' }, packadd = { 'nvim-treesitter' } },
-  { mod = 'lsp',                         event = { 'BufReadPre', 'BufNewFile' }, packadd = { 'goplements.nvim' } },
-  { mod = 'git',        fn = 'signs',    event = { 'BufReadPre', 'BufNewFile' }, packadd = { 'gitsigns.nvim', 'plenary.nvim' } },
   { mod = 'treesitter', fn = 'context',  event = { 'BufReadPre', 'BufNewFile' }, packadd = { 'nvim-treesitter-context' } },
+  { mod = 'git',        fn = 'signs',    event = { 'BufReadPre', 'BufNewFile' }, packadd = { 'gitsigns.nvim', 'plenary.nvim' } },
+  { mod = 'lsp',                         event = { 'BufReadPre', 'BufNewFile' }, packadd = { 'goplements.nvim' } },
 
   -- -------------------------------------------------------------------------
   -- InsertEnter / CmdlineEnter (completion)
@@ -257,6 +256,7 @@ pack.setup({
       { '<leader>ctf',   desc = '[F]ile' },
       { '<leader>cts',   desc = '[S]ummary' },
       { '<leader>ctl',   desc = '[L]ast' },
+      { '<leader>cte',   desc = 'File with [E]nv' },
     }, packadd = { 'nvim-nio', 'plenary.nvim', 'neotest', 'neotest-golang' } },
   -- Leetcode
   { mod = 'leetcode', keys = {
@@ -301,7 +301,6 @@ pack.setup({
   { mod = 'preview', fn = 'csv', keys = {
       { '<leader>pc',   desc = '[C]sv' },
     }, packadd = { 'csvview.nvim' } },
-  { mod = 'preview', fn = 'md', event = "Filetype", pattern = {'md', 'markdown', 'codecompanion'}, packadd = { 'render-markdown.nvim' } },
 
   -- -------------------------------------------------------------------------
   -- Deferred (idle — load after defer ms)
@@ -309,4 +308,5 @@ pack.setup({
   { mod = 'editing', fn = 'guess_indent',  defer = 1,    packadd = { 'guess-indent.nvim' } },
   { mod = 'notification',                  defer = 1,    packadd = { 'nvim-notify' } },
   -- { mod = 'achievements',                  defer = 500,  packadd = { 'volt', 'triforce.nvim' } },
+  { mod = 'preview', fn = 'md',            defer = 50,   packadd = { 'render-markdown.nvim' } },
 })

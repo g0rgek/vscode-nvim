@@ -1094,11 +1094,11 @@ local TablineFileNameBlock = {
 		end,
 		name = "heirline_tabline_buffer_callback",
 	},
-	{ provider = "  " },
-	FileIcon,
+	{ provider = " " },
+	-- FileIcon,
 	TablineFileName,
 	TablineFileFlags,
-	{ provider = "  " },
+	{ provider = " " },
 }
 
 -- Close button (only for unmodified buffers)
@@ -1220,7 +1220,7 @@ vim.api.nvim_set_hl(0, "TabLineFill", { bg = "#1f1f1f" })
 -- Setup
 -- ===========================================================================
 heirline.setup({
-	statusline = StatusLines,
+	statusline = nil,
 	winbar = nil,
 	tabline = TabLine,
 	opts = {
@@ -1240,4 +1240,7 @@ heirline.setup({
 		end,
 	},
 })
+
+-- Override active tab background color (after setup so it isn't reset)
+vim.api.nvim_set_hl(0, "TabLineSel", { bg = "#0074c2", fg = "#ffffff" })
 

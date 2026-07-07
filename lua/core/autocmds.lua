@@ -70,6 +70,17 @@ vim.api.nvim_create_autocmd('VimEnter', {
 })
 
 -- =============================================================================
+-- CLOSE QUICKFIX / LOCATION LIST WITH q
+-- =============================================================================
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = { 'qf', 'help', 'man', 'lspinfo', 'notify' },
+  callback = function(event)
+    vim.bo[event.buf].buflisted = false
+    vim.keymap.set('n', 'q', '<cmd>close<CR>', { buffer = event.buf, silent = true })
+  end,
+})
+
+-- =============================================================================
 -- ENABLE CSV RENDER
 -- =============================================================================
 vim.api.nvim_create_autocmd("FileType", {

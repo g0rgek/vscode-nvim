@@ -32,6 +32,13 @@ function M.barbecue()
     },
     create_autocmd = true,
   })
+
+  -- setup() only registers autocmds; it does NOT render the current window.
+  -- Since we lazy-load on UIEnter, the initial BufWinEnter already fired,
+  -- so without this call the winbar stays blank until CursorMoved/InsertLeave.
+  vim.schedule(function()
+    pcall(require('barbecue.ui').update)
+  end)
 end
 
 return M

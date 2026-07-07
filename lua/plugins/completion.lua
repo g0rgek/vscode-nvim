@@ -38,19 +38,25 @@ require("blink.cmp").setup({
 	},
 
 	completion = {
+		accept = {
+			auto_brackets = {
+				enabled = true,
+				default_brackets = { "(", ")" },
+				kind_resolution = { enabled = true },
+				semantic_token_resolution = { enabled = true },
+			},
+		},
 		documentation = {
 			auto_show = true,
 			auto_show_delay_ms = 500,
 			window = {
-				border = "rounded",
-				winhighlight = "Normal:CmpDocumentation,FloatBorder:CmpDocumentationBorder,CursorLine:CmpDocumentationCursorLine,Search:None",
+				border = "none",
+				winhighlight = "Normal:CmpDocumentation,CursorLine:CmpDocumentationCursorLine,Search:None",
 				scrollbar = true,
-				max_width = 80,
-				max_height = 20,
 			},
 		},
 		menu = {
-			border = "rounded",
+			border = "none",
 			winhighlight = "Normal:CmpMenu,FloatBorder:CmpMenuBorder,CursorLine:PmenuSel,Search:None",
 			max_height = 15,
 			scrolloff = 2,
