@@ -4,7 +4,6 @@ local heirline = require("heirline")
 local conditions = require("heirline.conditions")
 local utils = require("heirline.utils")
 local devicons = require("nvim-web-devicons")
-local triforce = require("heirline.components.triforce")
 
 -- ---------------------------------------------------------------------------
 -- Colors
@@ -41,7 +40,6 @@ local function setup_colors()
 	}
 end
 
-
 heirline.load_colors(setup_colors)
 
 vim.api.nvim_create_augroup("Heirline", { clear = true })
@@ -55,9 +53,13 @@ vim.api.nvim_create_autocmd("ColorScheme", {
 -- Update statusline automatically
 do
 	local tick = vim.uv.new_timer()
-	tick:start(0,5000,vim.schedule_wrap(function()
-		vim.cmd("redrawstatus")
-	end))
+	tick:start(
+		0,
+		5000,
+		vim.schedule_wrap(function()
+			vim.cmd("redrawstatus")
+		end)
+	)
 end
 
 -- ---------------------------------------------------------------------------
@@ -556,12 +558,14 @@ local CodeCompanionStatus = {
 	end,
 	provider = function()
 		local s = vim.g.codecompanion_status
-		if not s then return "" end
+		if not s then
+			return ""
+		end
 		local adapter = s.adapter and (s.adapter .. " ") or ""
 		local msg = s.message or ""
 		return " " .. adapter .. msg .. ""
 	end,
-	hl = { fg = "lavender", bold = true }
+	hl = { fg = "lavender", bold = true },
 }
 
 -- ---------------------------------------------------------------------------
@@ -634,7 +638,6 @@ local GitBlame = {
 	hl = { fg = "text" },
 }
 
-
 -- ---------------------------------------------------------------------------
 -- Language version helper
 -- ---------------------------------------------------------------------------
@@ -649,15 +652,12 @@ local function lang_version()
 	if ft == "go" then
 		local out = vim.fn.system("go version"):gsub("\n", "")
 		ver = out:match("go version%s+go([%d%.]+)") or ""
-
 	elseif ft == "rust" then
 		local out = vim.fn.system("rustc --version"):gsub("\n", "")
 		ver = out:match("rustc%s+([%w%.%-]+)") or ""
-
 	elseif ft == "c" or ft == "cpp" then
 		local out = vim.fn.system("gcc --version | head -n1"):gsub("\n", "")
 		ver = out:match("gcc[^%d]*([%d%.]+)") or ""
-
 	elseif ft == "python" then
 		local out = vim.fn.system("python --version 2>&1"):gsub("\n", "")
 		ver = out:match("Python%s+([%d%.]+)") or ""
@@ -667,7 +667,6 @@ local function lang_version()
 			local venv_name = vim.fn.fnamemodify(venv, ":t")
 			ver = ver .. " (" .. venv_name .. ")"
 		end
-
 	elseif ft == "typst" then
 		local out = vim.fn.system("typst -V"):gsub("\n", "")
 		ver = out:match("(%d+%.%d+%.%d+)") or ""
@@ -745,7 +744,6 @@ local DefaultStatusline = {
 	Align,
 	SearchCount,
 	Space,
-	triforce.Component,
 	-- Space,
 	Spell,
 	Paste,
@@ -999,21 +997,27 @@ local WinBar = {
 -- ===========================================================================
 
 -- Buffer filename (tail only, with parent folder for duplicates)
-local function get_unique_filename(bufnr)
+-- Results are cached and recomputed only when buffer list changes.
+local _label_cache = {}
+local _duplicates_dirty = true
+
+local function rebuild_duplicates()
 	local bufs = vim.tbl_filter(function(b)
 		return vim.api.nvim_get_option_value("buflisted", { buf = b })
 	end, vim.api.nvim_list_bufs())
 
-	-- Collect all filenames
 	local filenames = {}
 	for _, b in ipairs(bufs) do
 		local name = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(b), ":t")
-		if name == "" then name = "[No Name]" end
-		if not filenames[name] then filenames[name] = {} end
+		if name == "" then
+			name = "[No Name]"
+		end
+		if not filenames[name] then
+			filenames[name] = {}
+		end
 		table.insert(filenames[name], b)
 	end
 
-	-- Find duplicates
 	local duplicates = {}
 	for name, buf_list in pairs(filenames) do
 		if #buf_list > 1 then
@@ -1021,16 +1025,52 @@ local function get_unique_filename(bufnr)
 		end
 	end
 
-	-- Return parent folder + filename for duplicates, tail for unique
-	local filename = vim.api.nvim_buf_get_name(bufnr)
-	local tail = vim.fn.fnamemodify(filename, ":t")
-	if tail == "" then tail = "[No Name]" end
-
-	if duplicates[tail] then
-		local parent = vim.fn.fnamemodify(filename, ":h:t")
-		return parent .. "/" .. tail
+	-- Pre-compute labels for all buffers
+	local labels = {}
+	for _, b in ipairs(bufs) do
+		local filename = vim.api.nvim_buf_get_name(b)
+		local tail = vim.fn.fnamemodify(filename, ":t")
+		if tail == "" then
+			tail = "[No Name]"
+		end
+		if duplicates[tail] then
+			local parent = vim.fn.fnamemodify(filename, ":h:t")
+			labels[b] = parent .. "/" .. tail
+		else
+			labels[b] = tail
+		end
 	end
-	return tail
+
+	_label_cache = labels
+	_duplicates_dirty = false
+end
+
+local function invalidate_label_cache()
+	_duplicates_dirty = true
+	_indices_dirty = true
+	_label_cache = {}
+	-- Force a tabline redraw so the next render picks up fresh labels
+	vim.schedule(function()
+		pcall(vim.cmd.redrawtabline)
+	end)
+end
+
+-- Invalidate cache when buffer list or names change
+local cache_group = vim.api.nvim_create_augroup("HeirlineBufLabelCache", { clear = true })
+vim.api.nvim_create_autocmd({ "BufAdd", "BufDelete", "BufWipeout" }, {
+	group = cache_group,
+	callback = invalidate_label_cache,
+})
+vim.api.nvim_create_autocmd("BufFilePost", {
+	group = cache_group,
+	callback = invalidate_label_cache,
+})
+
+local function get_unique_filename(bufnr)
+	if _duplicates_dirty then
+		rebuild_duplicates()
+	end
+	return _label_cache[bufnr] or vim.fn.fnamemodify(vim.api.nvim_buf_get_name(bufnr), ":t")
 end
 
 local TablineFileName = {
@@ -1195,16 +1235,31 @@ local TabLineOffset = {
 	end,
 }
 
--- Build bufnr → position index map once per tabline render (O(M) scan, not O(N×M))
+-- Build bufnr → position index map from cached listed buffers
+local _buf_indices = {}
+local _indices_dirty = true
+
+local function rebuild_buf_indices()
+	-- Reuse rebuild_duplicates to populate listed bufs if not already fresh
+	if _duplicates_dirty then
+		rebuild_duplicates()
+	end
+	-- _label_cache is keyed by bufnr, so its keys are the listed buffer list
+	local bufs = vim.tbl_keys(_label_cache)
+	table.sort(bufs)
+	_buf_indices = {}
+	for i, b in ipairs(bufs) do
+		_buf_indices[b] = i
+	end
+	_indices_dirty = false
+end
+
 local TabLine = {
 	init = function(self)
-		local bufs = vim.tbl_filter(function(b)
-			return vim.api.nvim_get_option_value("buflisted", { buf = b })
-		end, vim.api.nvim_list_bufs())
-		self._buf_indices = {}
-		for i, b in ipairs(bufs) do
-			self._buf_indices[b] = i
+		if _indices_dirty then
+			rebuild_buf_indices()
 		end
+		self._buf_indices = _buf_indices
 	end,
 	TabLineOffset,
 	BufferLine,
@@ -1243,4 +1298,3 @@ heirline.setup({
 
 -- Override active tab background color (after setup so it isn't reset)
 vim.api.nvim_set_hl(0, "TabLineSel", { bg = "#0074c2", fg = "#ffffff" })
-

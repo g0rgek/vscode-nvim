@@ -33,11 +33,11 @@ vim.g.have_nerd_font = true
 -- =============================================================================
 vim.o.number = true
 vim.o.relativenumber = false
-vim.o.mouse = 'a'
+vim.o.mouse = "a"
 vim.o.showmode = false
 vim.o.cursorline = true
-vim.wo.cursorlineopt = 'number'
-vim.o.signcolumn = 'yes'
+vim.wo.cursorlineopt = "number"
+vim.o.signcolumn = "yes"
 vim.o.termguicolors = true
 vim.o.laststatus = 3
 vim.opt.fillchars = { eob = " " }
@@ -49,7 +49,7 @@ vim.opt.fillchars = { eob = " " }
 vim.opt.smoothscroll = true
 vim.o.cmdheight = 0
 vim.o.autoread = true
-vim.opt.guicursor = 'n-v-c-sm:block,i-ci-ve:ver25,r-cr-o:hor20'
+vim.opt.guicursor = "n-v-c-sm:block,i-ci-ve:ver25,r-cr-o:hor20"
 vim.opt.tabstop = 4
 vim.opt.shiftwidth = 4
 vim.opt.softtabstop = 4
@@ -57,35 +57,33 @@ vim.opt.softtabstop = 4
 -- =============================================================================
 -- Editing
 -- =============================================================================
-vim.o.clipboard = 'unnamedplus'
+vim.o.clipboard = "unnamedplus"
 vim.o.breakindent = true
 vim.o.ignorecase = true
 vim.o.smartcase = true
-vim.o.inccommand = 'split'
+vim.o.inccommand = "split"
 vim.o.confirm = true
 vim.o.scrolloff = 10
 vim.o.list = true
 vim.opt.list = true
-vim.opt.listchars = { tab = '» ', trail = '·', space = '·', nbsp = '␣'}
+vim.opt.listchars = { tab = "» ", trail = "·", space = "·", nbsp = "␣" }
 vim.o.wrap = true
 vim.o.sidescrolloff = 8
-vim.o.gdefault = true  -- global replace by default
+vim.o.gdefault = true -- global replace by default
 
 -- =============================================================================
 -- Performance
 -- =============================================================================
-vim.o.updatetime = 250
+vim.o.updatetime = 750
 vim.o.timeoutlen = 300
 vim.opt.ttimeoutlen = 10
 vim.opt.lazyredraw = true
 vim.opt.swapfile = false
 vim.opt.backup = false
 vim.opt.writebackup = false
-vim.opt.shortmess:append 'c'
-vim.opt.shortmess:append 'W'
-vim.opt.shortmess:append 'I'
+vim.opt.shortmess:append("cWIFtS")
 vim.opt.synmaxcol = 500
-vim.opt.regexpengine = 0  -- auto-select best regex engine
+vim.opt.regexpengine = 0 -- auto-select best regex engine
 
 -- =============================================================================
 -- Files & History
@@ -105,7 +103,7 @@ vim.o.equalalways = false
 -- =============================================================================
 -- Folding
 -- =============================================================================
-vim.o.foldmethod = 'indent'
+vim.o.foldmethod = "indent"
 -- vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 vim.o.foldlevel = 99
 vim.o.foldlevelstart = 99
@@ -117,8 +115,7 @@ vim.opt.foldnestmax = 3
 -- =============================================================================
 vim.opt.pumheight = 15
 vim.opt.pumwidth = 30
-vim.opt.completeopt = { 'menu', 'menuone', 'noselect' }
-
+vim.opt.completeopt = { "menu", "menuone", "noselect" }
 
 -- =============================================================================
 -- User Plugins
@@ -128,20 +125,16 @@ vim.g.db_ui_disable_progress_bar = 1
 vim.g.db_ui_disable_info_notifications = 1
 vim.g.db_ui_use_nerd_fonts = 1
 vim.g.db_ui_save_location = "~/.local/share/db_ui"
-vim.g.gitblame_display_virtual_text = 0
-vim.g.gitblame_message_template = '<author> (<date>)'
-vim.g.gitblame_date_format = '%r'
-vim.g.barbar_auto_setup = false
 
 -- =============================================================================
 -- Filetype detection patches (deferred — avoids eager require('vim.filetype'))
 -- =============================================================================
 vim.schedule(function()
-  vim.filetype.add {
-    pattern = {
-      ['.*/.*%.component%.html'] = 'htmlangular',
-    },
-  }
+	vim.filetype.add({
+		pattern = {
+			[".*/.*%.component%.html"] = "htmlangular",
+		},
+	})
 end)
 
 -- =============================================================================

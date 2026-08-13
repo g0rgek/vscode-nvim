@@ -7,12 +7,12 @@
 -- =============================================================================
 -- HIGHLIGHT ON YANK
 -- =============================================================================
-vim.api.nvim_create_autocmd('TextYankPost', {
-  desc = 'Highlight when yanking (copying) text',
-  group = vim.api.nvim_create_augroup('nvimpack-highlight-yank', { clear = true }),
-  callback = function()
-    vim.hl.on_yank()
-  end,
+vim.api.nvim_create_autocmd("TextYankPost", {
+	desc = "Highlight when yanking (copying) text",
+	group = vim.api.nvim_create_augroup("nvimpack-highlight-yank", { clear = true }),
+	callback = function()
+		vim.hl.on_yank()
+	end,
 })
 
 -- =============================================================================
@@ -20,34 +20,36 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 -- Saves session to stdpath('data')/sessions/ on exit; loads on demand.
 -- =============================================================================
 
-local _session_dir = vim.fn.stdpath('data') .. '/sessions'
-vim.fn.mkdir(_session_dir, 'p')
+local _session_dir = vim.fn.stdpath("data") .. "/sessions"
+vim.fn.mkdir(_session_dir, "p")
 
 -- Expose session dir for keymaps in tools.lua
 vim.g._native_session_dir = _session_dir
 
 local _session_save_enabled = true
-local _session_group = vim.api.nvim_create_augroup('nvimpack-session', { clear = true })
+local _session_group = vim.api.nvim_create_augroup("nvimpack-session", { clear = true })
 
-vim.api.nvim_create_autocmd('VimLeavePre', {
-  desc = 'Auto-save session on exit',
-  group = _session_group,
-  callback = function()
-    if not _session_save_enabled then return end
-    -- Only save if Neovim was opened without file arguments
-    if #vim.fn.argv() == 0 then
-      local session_file = _session_dir .. '/last.vim'
-      pcall(vim.cmd, 'mksession! ' .. vim.fn.fnameescape(session_file))
-    end
-  end,
+vim.api.nvim_create_autocmd("VimLeavePre", {
+	desc = "Auto-save session on exit",
+	group = _session_group,
+	callback = function()
+		if not _session_save_enabled then
+			return
+		end
+		-- Only save if Neovim was opened without file arguments
+		if #vim.fn.argv() == 0 then
+			local session_file = _session_dir .. "/last.vim"
+			pcall(vim.cmd, "mksession! " .. vim.fn.fnameescape(session_file))
+		end
+	end,
 })
 
 -- Expose session control for keymap callbacks
 function vim.g._session_disable()
-  _session_save_enabled = false
-  -- Clear the autocmd so the current session is not saved
-  vim.api.nvim_create_augroup('nvimpack-session', { clear = true })
-  vim.notify('Session auto-save disabled for this session', vim.log.levels.INFO)
+	_session_save_enabled = false
+	-- Clear the autocmd so the current session is not saved
+	vim.api.nvim_create_augroup("nvimpack-session", { clear = true })
+	vim.notify("Session auto-save disabled for this session", vim.log.levels.INFO)
 end
 
 -- =============================================================================
@@ -56,38 +58,40 @@ end
 -- unbounded growth (the default log level is WARN, which still accumulates).
 -- The log is recreated automatically when LSP clients start.
 -- =============================================================================
-vim.api.nvim_create_autocmd('VimEnter', {
-  desc = 'Truncate oversized LSP log file',
-  group = vim.api.nvim_create_augroup('nvimpack-lsp-log-rotation', { clear = true }),
-  callback = function()
-    local log_path = vim.lsp.log.get_filename()
-    if not log_path then return end
-    local ok, stat = pcall(vim.uv.fs_stat, log_path)
-    if ok and stat and stat.size > 10 * 1024 * 1024 then
-      pcall(vim.uv.fs_unlink, log_path)
-    end
-  end,
+vim.api.nvim_create_autocmd("VimEnter", {
+	desc = "Truncate oversized LSP log file",
+	group = vim.api.nvim_create_augroup("nvimpack-lsp-log-rotation", { clear = true }),
+	callback = function()
+		local log_path = vim.lsp.log.get_filename()
+		if not log_path then
+			return
+		end
+		local ok, stat = pcall(vim.uv.fs_stat, log_path)
+		if ok and stat and stat.size > 10 * 1024 * 1024 then
+			pcall(vim.uv.fs_unlink, log_path)
+		end
+	end,
 })
 
 -- =============================================================================
 -- CLOSE QUICKFIX / LOCATION LIST WITH q
 -- =============================================================================
-vim.api.nvim_create_autocmd('FileType', {
-  pattern = { 'qf', 'help', 'man', 'lspinfo', 'notify' },
-  callback = function(event)
-    vim.bo[event.buf].buflisted = false
-    vim.keymap.set('n', 'q', '<cmd>close<CR>', { buffer = event.buf, silent = true })
-  end,
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = { "qf", "help", "man", "lspinfo", "notify" },
+	callback = function(event)
+		vim.bo[event.buf].buflisted = false
+		vim.keymap.set("n", "q", "<cmd>close<CR>", { buffer = event.buf, silent = true })
+	end,
 })
 
 -- =============================================================================
 -- ENABLE CSV RENDER
 -- =============================================================================
 vim.api.nvim_create_autocmd("FileType", {
-  pattern = { "csv" },
-  callback = function()
-    vim.cmd("CsvViewToggle display_mode=highlight header_lnum=1")
-  end,
+	pattern = { "csv" },
+	callback = function()
+		vim.cmd("CsvViewToggle display_mode=highlight header_lnum=1")
+	end,
 })
 
 -- =============================================================================
@@ -99,4 +103,3 @@ vim.api.nvim_create_autocmd("FileType", {
 --   command = "silent! checktime",
 -- })
 --
-

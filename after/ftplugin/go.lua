@@ -15,7 +15,7 @@ map("n", "<leader>cto", function()
 	end
 
 	vim.cmd.split(target)
-end, {desc = "[O]pen test file"})
+end, { desc = "[O]pen test file" })
 
 local function make_or_go(modifier, args)
 	local makefiles = { "Makefile", "makefile", "GNUmakefile" }
@@ -104,7 +104,10 @@ vim.api.nvim_create_user_command("GoBuild", function(opts)
 		else
 			local main_go = resolve_main()
 			if main_go == "" then
-				vim.notify("main.go not found and no Makefile build target. Provide args like :GoBuild -o output main.go", vim.log.levels.WARN)
+				vim.notify(
+					"main.go not found and no Makefile build target. Provide args like :GoBuild -o output main.go",
+					vim.log.levels.WARN
+				)
 				return
 			end
 			local main_rel = vim.fn.fnamemodify(main_go, ":.")
@@ -122,7 +125,10 @@ vim.api.nvim_create_user_command("GoRun", function(opts)
 		else
 			local main_go = resolve_main()
 			if main_go == "" then
-				vim.notify("main.go not found and no Makefile run target. Provide args like :GoRun main.go", vim.log.levels.WARN)
+				vim.notify(
+					"main.go not found and no Makefile run target. Provide args like :GoRun main.go",
+					vim.log.levels.WARN
+				)
 				return
 			end
 			local main_rel = vim.fn.fnamemodify(main_go, ":.")
@@ -139,8 +145,7 @@ map("n", "<leader>om", function()
 		return
 	end
 	vim.cmd.edit(vim.fn.fnamemodify(go_mod, ":p"))
-end, {desc = "go.[m]od"})
+end, { desc = "go.[m]od" })
 
-map("n", "<leader>cb", "<cmd>GoBuild<CR>", {desc = "[B]uild"})
-map("n", "<leader>cr", "<cmd>GoRun<CR>", {desc = "[R]un"})
-
+map("n", "<leader>cb", "<cmd>GoBuild<CR>", { desc = "[B]uild" })
+map("n", "<leader>cr", "<cmd>GoRun<CR>", { desc = "[R]un" })

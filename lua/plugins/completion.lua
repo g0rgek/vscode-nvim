@@ -103,12 +103,12 @@ require("blink.cmp").setup({
 			},
 		},
 	},
-  cmdline = {
-    enabled = false,
-  },
+	cmdline = {
+		enabled = false,
+	},
 	sources = {
 		default = { "lsp", "snippets", "path", "buffer" },
-                providers = {
+		providers = {
 			lsp = {
 				min_keyword_length = 0,
 				score_offset = 4,
