@@ -10,6 +10,7 @@ vim.api.nvim_set_hl(0, "StatusFilePath", { fg = "#ffffff", bg = "#0074c2" })
 vim.api.nvim_set_hl(0, "StatusSelCount", { fg = "#b4d5f5", bg = "#0074c2" })
 vim.api.nvim_set_hl(0, "StatusGoVersion", { fg = "#ffffff", bg = "#0074c2" })
 vim.api.nvim_set_hl(0, "StatusLocation", { fg = "#ffffff", bg = "#0074c2" })
+vim.api.nvim_set_hl(0, "StatusSearchCount", { fg = "#b4d5f5", bg = "#0074c2" })
 vim.api.nvim_set_hl(0, "StatusSeparator", { fg = "#0074c2" })
 
 -- Message area highlights: match statusline background so no flicker
@@ -50,6 +51,24 @@ end
 
 -- Export for plugins/ wrapper
 _G.core_statusline = M
+
+-- Search match count ([cur/total]) shown to the left of Line:Column while
+-- hlsearch is active. recompute=1 derives the current match from the cursor
+-- position on every evaluation, so it stays correct however the cursor got
+-- there (n/N, a remap, a jump plugin, or a manual move while hlsearch is on).
+-- recompute=0 would rely on Neovim's internal search cache, which can return a
+-- frozen "1" as the cursor moves outside of a plain n/N search. Hidden after
+-- :nohlsearch (vim.v.hlsearch becomes 0) or when there are no matches.
+local function search_count()
+	if vim.v.hlsearch == 0 then
+		return ""
+	end
+	local ok, sc = pcall(vim.fn.searchcount, { recompute = 1, maxcount = 99, timeout = 500 })
+	if not ok or type(sc) ~= "table" or not sc.total or sc.total == 0 then
+		return ""
+	end
+	return string.format(" [%d/%d]", sc.current, sc.total)
+end
 
 -- Build the statusline string
 local function statusline()
@@ -93,6 +112,9 @@ local function statusline()
 	-- Line : Column (Helix-style)
 	local loc = string.format(" %d:%d ", vim.fn.line("."), vim.fn.col("."))
 
+	-- Search match count, shown before Line:Column when hlsearch is on
+	local search = search_count()
+
 	return table.concat({
 		"%#StatusLineMode#",
 		label,
@@ -103,6 +125,8 @@ local function statusline()
 		sel,
 		"%*%#StatusSeparator#%=%#StatusGoVersion#",
 		go_version,
+		"%*%#StatusSearchCount#",
+		search,
 		"%*%#StatusLocation#",
 		loc,
 		"%*",
@@ -112,6 +136,18 @@ end
 vim.o.statusline = "%{%v:lua.statusline()%}"
 _G.statusline = statusline
 
+-- Neovim caches the result of the %{...} expression and only rebuilds it on
+-- mode/window changes, so the statusline would go stale as the cursor moves
+-- (cycling matches with n/N leaves the [cur/total] count frozen, and
+-- :nohlsearch leaves it lingering). Rebuild it whenever the cursor moves or a
+-- command line is left (covers n/N, :nohlsearch, :set [no]hlsearch, / and ?).
+vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI", "CmdlineLeave" }, {
+	group = vim.api.nvim_create_augroup("core_statusline_redraw", { clear = true }),
+	callback = function()
+		vim.cmd("redrawstatus")
+	end,
+})
+
 -- Helper to re-apply after colorscheme resets
 local function apply_highlights()
 	pcall(vim.api.nvim_set_hl, 0, "StatusLine", { fg = "#ffffff", bg = "#0074c2" })
@@ -120,6 +156,7 @@ local function apply_highlights()
 	pcall(vim.api.nvim_set_hl, 0, "StatusSelCount", { fg = "#b4d5f5", bg = "#0074c2" })
 	pcall(vim.api.nvim_set_hl, 0, "StatusGoVersion", { fg = "#ffffff", bg = "#0074c2" })
 	pcall(vim.api.nvim_set_hl, 0, "StatusLocation", { fg = "#ffffff", bg = "#0074c2" })
+	pcall(vim.api.nvim_set_hl, 0, "StatusSearchCount", { fg = "#b4d5f5", bg = "#0074c2" })
 	pcall(vim.api.nvim_set_hl, 0, "StatusSeparator", { fg = "#0074c2" })
 	-- pcall(vim.api.nvim_set_hl, 0, "MsgArea",         { fg = "#ffffff", bg = "#0074c2" })
 	-- pcall(vim.api.nvim_set_hl, 0, "MsgSeparator",    { fg = "#0074c2", bg = "#0074c2" })
