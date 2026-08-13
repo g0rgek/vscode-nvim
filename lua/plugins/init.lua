@@ -28,7 +28,7 @@ vim.pack.add({
 		src = "/home/gorgek/.config/nvim/plugins/nvim-notify",
 	},
 	{
-		src = "/home/gorgek/.config/nvim/plugins/tiny-inline-diagnostic.nvim",
+		src = "/home/gorgek/.config/nvim/plugins/error-lens.nvim",
 	},
 
 	-- Editor helpers
@@ -37,6 +37,9 @@ vim.pack.add({
 	},
 	{
 		src = "/home/gorgek/.config/nvim/plugins/guess-indent.nvim",
+	},
+	{
+	src = "/home/gorgek/.config/nvim/plugins/tiny-inline-diagnostic.nvim",
 	},
 
 	-- Completion
@@ -184,9 +187,11 @@ local pack = require("core.pack")
 pack.setup({
 
 	-- -------------------------------------------------------------------------
-	-- Immediate (first frame — keep minimal; only catppuccin)
+	-- Immediate (first frame — theme + treesitter so the first buffer is
+	-- highlighted instantly instead of flashing gray while the async parse runs)
 	-- -------------------------------------------------------------------------
 	{ mod = "vscode", packadd = { "vscode" } },
+	{ mod = "treesitter", fn = "base", packadd = { "nvim-treesitter" } },
 
 	-- -------------------------------------------------------------------------
 	-- VimEnter (non-blocking — loads after init but before UI renders)
@@ -199,6 +204,7 @@ pack.setup({
 	-- -------------------------------------------------------------------------
 	-- UIEnter (non-blocking — loads after first frame renders)
 	-- -------------------------------------------------------------------------
+	{ mod = "ui", fn = "tiny_inline_diag", event = "UIEnter", packadd = { "tiny-inline-diagnostic.nvim" } },
 	{ mod = "heirline", event = "UIEnter", packadd = { "heirline.nvim", "nvim-web-devicons" } },
 	{
 		mod = "ui",
@@ -206,12 +212,12 @@ pack.setup({
 		event = "UIEnter",
 		packadd = { "which-key.nvim" },
 	},
-	{
-		mod = "ui",
-		fn = "tiny_diagnostics",
-		event = "UIEnter",
-		packadd = { "tiny-inline-diagnostic.nvim" },
-	},
+	-- {
+	-- 	mod = "ui",
+	-- 	fn = "error_lens",
+	-- 	event = "UIEnter",
+	-- 	packadd = { "error-lens.nvim" },
+	-- },
 	{
 		mod = "editing",
 		fn = "base_ui",
@@ -224,7 +230,6 @@ pack.setup({
 	-- Order matters: lightweight frames first so context renders before
 	-- gitsigns/LSP (which can block the autocmd queue for several ms).
 	-- -------------------------------------------------------------------------
-	{ mod = "treesitter", fn = "base", event = { "BufReadPre", "BufNewFile" }, packadd = { "nvim-treesitter" } },
 	{
 		mod = "treesitter",
 		fn = "context",
@@ -246,9 +251,12 @@ pack.setup({
 	{ mod = "minuet", event = { "InsertEnter", "CmdlineEnter" }, packadd = { "minuet-ai.nvim" } },
 
 	-- -------------------------------------------------------------------------
-	-- BufWritePre (formatting on save — conform has its own internal guard)
+	-- BufReadPre/BufNewFile (formatting on save — conform has its own internal
+	-- guard). Loaded on first file open (not BufWritePre) so conform's
+	-- format_on_save autocmd is registered before the first `:w`; loading on
+	-- BufWritePre made the first save a no-op.
 	-- -------------------------------------------------------------------------
-	{ mod = "editing", fn = "format", event = "BufWritePre", packadd = { "conform.nvim" } },
+	{ mod = "editing", fn = "format", event = { "BufReadPre", "BufNewFile" }, packadd = { "conform.nvim" } },
 
 	-- -------------------------------------------------------------------------
 	-- Keymap-triggered (first keypress loads the module, then replays the key)

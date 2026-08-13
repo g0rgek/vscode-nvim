@@ -49,12 +49,6 @@ vim.api.nvim_create_autocmd("UIEnter", {
 		-- Goplements inlay hint color
 		hl(0, "Goplements", { fg = c.vscSuggestion, bg = "NONE" })
 
-		-- Tiny diagnostics colors
-		hl(0, "DiagnosticError", { bg = "#3A2725", fg = "#FF6464" })
-		hl(0, "DiagnosticWarn", { bg = "#3E2F23", fg = "#FA973B" })
-		hl(0, "DiagnosticInfo", { bg = "#233332", fg = "#30AF65" })
-		hl(0, "DiagnosticHint", { bg = "#24313A", fg = "#569CD6" })
-
 		-- BlinkPairs rainbow parentheses colors.
 		-- Work around a blink.pairs namespace bug: the plugin defines these in the
 		-- blink_pairs (underscore) namespace, but applies extmarks in blink.pairs

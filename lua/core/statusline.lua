@@ -57,9 +57,18 @@ local function statusline()
 	local label = mode_labels[mode] or (" " .. mode:upper() .. " ")
 
 	-- File path (relative to cwd)
-	local path = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ":.")
-	if path == "" then
-		path = "[No Name]"
+	local ft = vim.bo.filetype
+	local path
+	if ft == "codecompanion" or ft == "codecompanion_input" then
+		-- The chat buffer's name is an LLM-generated title derived from the
+		-- first message; show a stable label instead of leaking it into the
+		-- statusline as if it were the filename.
+		path = "CodeCompanion"
+	else
+		path = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ":.")
+		if path == "" then
+			path = "[No Name]"
+		end
 	end
 
 	-- Selection count (only in visual mode)

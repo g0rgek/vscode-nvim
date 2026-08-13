@@ -187,7 +187,10 @@ function M.format()
 				return nil
 			else
 				return {
-					timeout_ms = 500,
+					-- goimports resolves missing imports against the module
+					-- graph, which can be slow on the first run (cold module
+					-- cache / private registry lookups), so give it room.
+					timeout_ms = 5000,
 					lsp_format = "fallback",
 				}
 			end
@@ -216,11 +219,6 @@ function M.format()
 					"api.sc-ci.sber.ru,stash.sigma.sbrf.ru,stash.delta.sbrf.ru",
 				},
 			},
-		},
-
-		format_on_save = {
-			timeout_ms = 1000,
-			lsp_format = "fallback",
 		},
 	})
 

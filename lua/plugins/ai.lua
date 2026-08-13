@@ -1,6 +1,10 @@
 require("codecompanion").setup({
 	display = {
 		chat = {
+			-- Fold code-context blocks (the files/selections shared via
+			-- #{buffer}/#{selection}). These are usually the largest part of a
+			-- chat buffer, so folding them keeps long chats fast to open/render.
+			fold_context = true,
 			window = {
 				position = "right",
 			},
@@ -13,13 +17,13 @@ require("codecompanion").setup({
 	},
 	interactions = {
 		chat = {
-			adapter = "gigacode",
+			adapter = "fcc",
 		},
 		inline = {
-			adapter = "gigacode",
+			adapter = "fcc",
 		},
 		cmd = {
-			adapter = "gigacode",
+			adapter = "fcc",
 		},
 	},
 	adapters = {
@@ -27,19 +31,8 @@ require("codecompanion").setup({
 			opts = {
 				show_presets = false,
 			},
-			gigacode = function()
-				return require("codecompanion.adapters.acp").extend("gemini_cli", {
-					commands = {
-						default = {
-							"gigacode",
-							"--acp",
-						},
-					},
-					handlers = {
-						auth = function(self)
-							return true
-						end,
-					},
+			fcc = function()
+				return require("codecompanion.adapters.acp").extend("claude_code", {
 				})
 			end,
 		},
@@ -51,7 +44,36 @@ require("codecompanion").setup({
 	},
 })
 
-map("v", "<leader>as", "<cmd>CodeCompanionChat<CR>", { desc = "[S]end selection to Companion" })
+-- Give the `#` editor-context and `@` tool tags a visible background so they
+-- read as distinct, clickable commands rather than plain text.
+vim.api.nvim_set_hl(0, "CodeCompanionChatEditorContext", { fg = "#9CDCFE", bg = "#223E55" })
+vim.api.nvim_set_hl(0, "CodeCompanionChatTool", { fg = "#C586C0", bg = "#3A3D41" })
+vim.api.nvim_set_hl(0, "CodeCompanionChatToolGroup", { fg = "#C586C0", bg = "#3A3D41" })
+
+-- Send the visual selection to the existing chat and focus it (the plain
+-- `CodeCompanionChat` command spawns a fresh window and doesn't focus).
+map("v", "<leader>as", function()
+	local cc = require("codecompanion")
+	local chat = cc.last_chat()
+	if not chat then
+		chat = cc.chat()
+	end
+	if not chat then
+		return vim.notify("Could not create chat buffer", vim.log.levels.WARN)
+	end
+	-- Refresh the chat's buffer context with the current visual selection so
+	-- the `#{selection}` tag resolves to it (an existing chat's stored context
+	-- is stale and would otherwise warn "No visual selection found").
+	chat.buffer_context = require("codecompanion.utils.context").get(vim.api.nvim_get_current_buf())
+	chat:add_buf_message({
+		role = require("codecompanion.config").constants.USER_ROLE,
+		content = "#{selection}",
+	})
+	chat.ui:open()
+	if chat.ui and chat.ui.winnr and vim.api.nvim_win_is_valid(chat.ui.winnr) then
+		vim.api.nvim_set_current_win(chat.ui.winnr)
+	end
+end, { desc = "[S]end selection to Companion" })
 map("v", "<leader>aS", function()
 	local start_line, end_line = vim.fn.line("v"), vim.fn.line(".")
 	if start_line > end_line then
@@ -71,6 +93,9 @@ map("v", "<leader>aS", function()
 		content = string.format("#{buffer}%s", line_ref),
 	})
 	chat.ui:open()
+	if chat.ui and chat.ui.winnr and vim.api.nvim_win_is_valid(chat.ui.winnr) then
+		vim.api.nvim_set_current_win(chat.ui.winnr)
+	end
 end, { desc = "[S]end buffer to Companion" })
 map("n", "<leader>ac", "<cmd>CodeCompanionChat Toggle<CR>", { desc = "[C]ompanion toggle" })
 map("n", "<leader>al", "<cmd>CodeCompanionAction list<CR>", { desc = "[L]ist Companions" })

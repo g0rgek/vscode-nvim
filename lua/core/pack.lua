@@ -92,7 +92,7 @@ function M.setup(registry)
 					-- Replay the original keypress so the now-loaded plugin handles it
 					local keys = vim.api.nvim_replace_termcodes(key, true, false, true)
 					vim.api.nvim_feedkeys(keys, "mit", false)
-				end, { desc = desc, nowait = true })
+				end, { desc = desc })
 			end
 		elseif entry.defer then
 			-- Deferred loading (vim.defer_fn)

@@ -20,26 +20,18 @@ function M.dev_icons()
 	})
 end
 
-function M.tiny_diagnostics()
-	require("tiny-inline-diagnostic").setup({
-		options = {
-			show_all_diags_on_cursorline = true,
-
-			multilines = {
-				enabled = true,
-			},
-
-			show_source = {
-				enabled = true,
-				if_many = false,
-			},
-
-			add_messages = true,
-		},
-
-		signs = {
-			diag = "●",
-			arrow = "",
+function M.error_lens()
+	-- ErrorLens-style diagnostics: a subtle whole-line background per severity
+	-- plus the diagnostic message drawn on the line. Colors are derived from the
+	-- loaded theme so the inline text stays in sync with vscode.nvim's
+	-- DiagnosticError/Warn/Info/Hint severities rather than a hardcoded palette.
+	require("error-lens").setup({
+		auto_adjust = {
+			enable = true,
+			-- The theme is transparent (Normal bg = NONE), so the plugin has no
+			-- theme background to blend against; fall back to vscode.nvim's own
+			-- dark background (vscBack) for the severity tint.
+			fallback_bg_color = "#1F1F1F",
 		},
 	})
 end
@@ -48,6 +40,16 @@ function M.which_key()
 	require("which-key").setup({
 		preset = "helix",
 		delay = 0,
+
+		-- Explicitly pin the leader (and the `<auto>` modes) as a trigger.
+		-- which-key's `<auto>` trigger discovery is async (registered on a timer
+		-- and re-attached after every suspend), so a bare `<leader>` press can
+		-- otherwise race it and show with delay — or not at all. Declaring the
+		-- leader manually keeps it deterministic.
+		triggers = {
+			{ "<auto>", mode = "nxso" },
+			{ "<leader>", mode = { "n", "v" } },
+		},
 
 		win = {
 			height = {
@@ -148,6 +150,30 @@ function M.quickfile()
 	-- ensuring the initial file renders instantly with syntax alone.
 	-- (This is a no-op for startup; just signals the feature is "enabled".)
 	-- The real effect is the absence of any blocking BufReadPost work here.
+end
+
+function M.tiny_inline_diag()
+    require("tiny-inline-diagnostic").setup({
+		options = {
+			show_all_diags_on_cursorline = true,
+
+			multilines = {
+				enabled = true,
+			},
+
+			show_source = {
+				enabled = true,
+				if_many = false,
+			},
+
+			add_messages = true,
+		},
+
+		signs = {
+			arrow = "",
+		}
+	})
+    vim.diagnostic.config({ virtual_text = false }) -- disable built-in virtual text
 end
 
 return M

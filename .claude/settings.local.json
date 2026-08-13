@@ -18,7 +18,18 @@
       "Bash(nvim --version --headless)",
       "Read(//home/gorgek/.local/share/nvim/**)",
       "Read(//home/gorgek/.cache/nvim/**)",
-      "Bash(nvim --headless -c 'set rtp' -c 'echo &rtp' -c q)"
+      "Bash(nvim --headless -c 'set rtp' -c 'echo &rtp' -c q)",
+      "Bash(goimports -h)",
+      "Bash(golangci-lint version *)",
+      "Read(//home/gorgek/**)",
+      "Bash(golangci-lint-langserver -h)",
+      "Read(//home/gorgek/.config/**)",
+      "Bash(find / -maxdepth 4 -name \".golangci*.yml\" -o -name \".golangci*.yaml\")",
+      "Bash(timeout 60 nvim --headless -c 'lua local ok, err = pcall\\(require, \"plugins\"\\); if not ok then io.write\\(\"PLUGINS ERROR: \" .. tostring\\(err\\) .. \"\\\\n\"\\) end' -c 'lua io.write\\(\"TREESITTER LOADED: \" .. tostring\\(package.loaded[\"nvim-treesitter\"] ~= nil\\) .. \"\\\\n\"\\)' -c 'lua io.write\\(\"BASE LOADED: \" .. tostring\\(require\\(\"core.pack\"\\).loaded\\(\\)[\"treesitter.base\"] ~= nil\\) .. \"\\\\n\"\\)' -c 'qa!')",
+      "Bash(grep -viE \"^\\\\s*$\")",
+      "Bash(timeout 60 nvim --headless -c 'lua require\\(\"plugins\"\\); local loaded = require\\(\"core.pack\"\\).loaded\\(\\); io.write\\(\"LOADED KEYS: \" .. table.concat\\(loaded, \", \"\\) .. \"\\\\n\"\\)' -c 'qa!')",
+      "Bash(timeout 60 nvim --headless -c 'qa!')",
+      "Bash(echo \"=== exit: $? ===\")"
     ]
   }
 }

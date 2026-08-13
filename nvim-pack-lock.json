@@ -64,6 +64,10 @@
       "rev": "8bfd2808994a988c975694122f68624b8a219f5f",
       "src": "/home/gorgek/.config/nvim/plugins/edgy.nvim"
     },
+    "error-lens.nvim": {
+      "rev": "958ce1d1e94ce03a4c06c45e192f1a723b02b0f3",
+      "src": "/home/gorgek/.config/nvim/plugins/error-lens.nvim"
+    },
     "fff.nvim": {
       "rev": "9a0deb39c3e4043b3137ecf2ed1b686d7a723462",
       "src": "https://github.com/dmtrKovalenko/fff.nvim"

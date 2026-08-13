@@ -50,9 +50,20 @@ end
 require("neo-tree").setup({
 	auto_clean_after_session_restore = true,
 	close_if_last_window = false,
-	enable_diagnostics = true,
+	-- When opening a file from the tree, never reuse the CodeCompanion chat
+	-- window (or any other non-code window). Otherwise, with focus in the chat
+	-- split, opening a file from `<leader>ef` drops it into the chat split.
+	open_files_do_not_replace_types = {
+		"terminal",
+		"Trouble",
+		"qf",
+		"edgy",
+		"codecompanion",
+		"codecompanion_input",
+	},
+	enable_diagnostics = false,
 	enable_git_status = true,
-	enable_modified_markers = true,
+	enable_modified_markers = false,
 	enable_refresh_on_write = true,
 	popup_border_style = "rounded",
 	sort_case_insensitive = false,
@@ -140,6 +151,79 @@ require("neo-tree").setup({
 			sidebar = "tab",
 			current = "window",
 		},
+		-- VSCode-style git decorations: folders collapse to a single colored dot
+		-- (colored by change type), while files show a letter — "M" modified,
+		-- "U" untracked, "A" added, "D" deleted, "R" renamed. The "?" (untracked)
+		-- and "W" (diagnostic) glyphs are gone entirely.
+		renderers = {
+			directory = {
+				{ "indent" },
+				{ "icon" },
+				{ "current_filter" },
+				{
+					"container",
+					content = {
+						{ "name", zindex = 10 },
+						{ "symlink_target", zindex = 10, highlight = "NeoTreeSymbolicLinkTarget" },
+						{ "clipboard", zindex = 10 },
+						{
+							"git_status",
+							zindex = 10,
+							align = "right",
+							hide_when_expanded = true,
+							symbols = {
+								added = "●",
+								deleted = "●",
+								modified = "●",
+								renamed = "●",
+								untracked = "●",
+								ignored = "",
+								unstaged = "",
+								staged = "",
+								conflict = "●",
+							},
+						},
+						{ "file_size", zindex = 10, align = "right" },
+						{ "type", zindex = 10, align = "right" },
+						{ "last_modified", zindex = 10, align = "right" },
+						{ "created", zindex = 10, align = "right" },
+					},
+				},
+			},
+			file = {
+				{ "indent" },
+				{ "icon" },
+				{
+					"container",
+					content = {
+						{ "name", zindex = 10 },
+						{ "symlink_target", zindex = 10, highlight = "NeoTreeSymbolicLinkTarget" },
+						{ "clipboard", zindex = 10 },
+						{ "bufnr", zindex = 10 },
+						{
+							"git_status",
+							zindex = 10,
+							align = "right",
+							symbols = {
+								added = "A",
+								deleted = "D",
+								modified = "M",
+								renamed = "R",
+								untracked = "U",
+								ignored = "",
+								unstaged = "",
+								staged = "",
+								conflict = "!",
+							},
+						},
+						{ "file_size", zindex = 10, align = "right" },
+						{ "type", zindex = 10, align = "right" },
+						{ "last_modified", zindex = 10, align = "right" },
+						{ "created", zindex = 10, align = "right" },
+					},
+				},
+			},
+		},
 	},
 
 	buffers = {
@@ -157,6 +241,29 @@ require("neo-tree").setup({
 		auto_expand_width = false,
 		popup = {},
 	},
+})
+
+-- VSCode-style git decoration colors. Neo-tree defines the NeoTreeGit* groups
+-- (or links them to GitSigns*) inside highlights.setup(), which runs the first
+-- time the tree is opened — and again on ColorScheme. So the overrides are
+-- applied from a FileType autocmd (which fires after that first setup), and a
+-- ColorScheme autocmd is registered from there so it always re-runs *after*
+-- neo-tree's own ColorScheme handler.
+local function set_neotree_git_colors()
+	vim.api.nvim_set_hl(0, "NeoTreeGitUntracked", { fg = "#73c991", bg = "NONE" }) -- green "U"
+	vim.api.nvim_set_hl(0, "NeoTreeGitModified", { fg = "#e2c08d", bg = "NONE" }) -- yellow "M" / folder dot
+end
+
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = "neo-tree",
+	group = vim.api.nvim_create_augroup("user_neotree_git_colors", { clear = true }),
+	callback = function()
+		set_neotree_git_colors()
+		vim.api.nvim_create_autocmd("ColorScheme", {
+			group = vim.api.nvim_create_augroup("user_neotree_git_colors_cs", { clear = true }),
+			callback = set_neotree_git_colors,
+		})
+	end,
 })
 
 -- Create named placeholder buffers (once) ─────────────────────────

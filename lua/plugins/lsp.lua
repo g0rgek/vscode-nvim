@@ -56,7 +56,15 @@ vim.lsp.config("golangci-lint-ls", {
 			"/dev/null",
 			"--show-stats=false",
 			"--issues-exit-code=1",
+			-- Bound parallelism: without this, each linter spawns its own `go`
+			-- subprocess and WSL2 reports the host's full CPU count, so a single
+			-- run explodes into hundreds of concurrent `go`/`golangci-lint`
+			-- processes. Keep it serial and capped.
+			"--concurrency=4",
+			"--allow-parallel-runners=true",
 		},
+		-- Re-lint only after the user pauses, not on every keystroke.
+		debounce = "1s",
 	},
 })
 
@@ -89,3 +97,12 @@ map("n", "<leader>uh", function()
 		require("goplements").toggle()
 	end
 end, { desc = "Inlay [H]ints" })
+
+map("n", "<leader>uR", function()
+	for _, client in ipairs(vim.lsp.get_clients()) do
+		client:stop()
+	end
+	vim.defer_fn(function()
+		vim.cmd("edit")
+	end, 200)
+end, { desc = "Restart [L]SP" })
