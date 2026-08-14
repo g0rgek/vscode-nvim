@@ -1,173 +1,182 @@
+-- Plugins are local git repos under <config>/plugins/. Resolve their absolute
+-- path at runtime (relative to stdpath('config')) so this file is portable across
+-- machines. It was previously hardcoded to /home/gorgek/.config/nvim/plugins/...,
+-- which broke on other hosts (macOS) and made vim.pack.add try to `git clone` from
+-- non-existent paths on startup.
+local function plug(name)
+	return vim.fs.joinpath(vim.fn.stdpath("config"), "plugins", name)
+end
+
 vim.pack.add({
 
 	-- Theme
 	{
-		src = "/home/gorgek/.config/nvim/plugins/vscode.nvim",
+		src = plug("vscode.nvim"),
 		name = "vscode",
 	},
 
 	-- Core utilities
 	{
-		src = "/home/gorgek/.config/nvim/plugins/plenary.nvim",
+		src = plug("plenary.nvim"),
 	},
 	{
-		src = "/home/gorgek/.config/nvim/plugins/nvim-web-devicons",
+		src = plug("nvim-web-devicons"),
 	},
 	{
-		src = "/home/gorgek/.config/nvim/plugins/nui.nvim",
+		src = plug("nui.nvim"),
 	},
 	{
-		src = "/home/gorgek/.config/nvim/plugins/nvim-navic",
+		src = plug("nvim-navic"),
 	},
 	{
-		src = "/home/gorgek/.config/nvim/plugins/nvim-nio",
+		src = plug("nvim-nio"),
 	},
 
 	-- Notifications
 	{
-		src = "/home/gorgek/.config/nvim/plugins/nvim-notify",
+		src = plug("nvim-notify"),
 	},
 	{
-		src = "/home/gorgek/.config/nvim/plugins/error-lens.nvim",
+		src = plug("error-lens.nvim"),
 	},
 
 	-- Editor helpers
 	{
-		src = "/home/gorgek/.config/nvim/plugins/which-key.nvim",
+		src = plug("which-key.nvim"),
 	},
 	{
-		src = "/home/gorgek/.config/nvim/plugins/guess-indent.nvim",
+		src = plug("guess-indent.nvim"),
 	},
 	{
-	src = "/home/gorgek/.config/nvim/plugins/tiny-inline-diagnostic.nvim",
+	src = plug("tiny-inline-diagnostic.nvim"),
 	},
 
 	-- Completion
 	{
-		src = "/home/gorgek/.config/nvim/plugins/blink.lib",
+		src = plug("blink.lib"),
 	},
 	{
-		src = "/home/gorgek/.config/nvim/plugins/blink.pairs",
+		src = plug("blink.pairs"),
 	},
 	{
-		src = "/home/gorgek/.config/nvim/plugins/blink.cmp",
+		src = plug("blink.cmp"),
 	},
 
 	-- Snippets
 	{
-		src = "/home/gorgek/.config/nvim/plugins/LuaSnip",
+		src = plug("LuaSnip"),
 	},
 	{
-		src = "/home/gorgek/.config/nvim/plugins/friendly-snippets",
+		src = plug("friendly-snippets"),
 	},
 
 	-- Formatting
 	{
-		src = "/home/gorgek/.config/nvim/plugins/conform.nvim",
+		src = plug("conform.nvim"),
 	},
 
 	-- Treesitter
 	{
-		src = "/home/gorgek/.config/nvim/plugins/nvim-treesitter",
+		src = plug("nvim-treesitter"),
 	},
 	{
-		src = "/home/gorgek/.config/nvim/plugins/nvim-treesitter-context",
+		src = plug("nvim-treesitter-context"),
 	},
 
 	-- Git
 	{
-		src = "/home/gorgek/.config/nvim/plugins/git-blame.nvim",
+		src = plug("git-blame.nvim"),
 	},
 	{
-		src = "/home/gorgek/.config/nvim/plugins/gitsigns.nvim",
+		src = plug("gitsigns.nvim"),
 	},
 	{
-		src = "/home/gorgek/.config/nvim/plugins/diffview.nvim",
+		src = plug("diffview.nvim"),
 	},
 	{
-		src = "/home/gorgek/.config/nvim/plugins/neogit",
+		src = plug("neogit"),
 	},
 
 	-- Utilities
 	{
-		src = "/home/gorgek/.config/nvim/plugins/snacks.nvim",
+		src = plug("snacks.nvim"),
 	},
 	{
-		src = "/home/gorgek/.config/nvim/plugins/blink.indent",
+		src = plug("blink.indent"),
 	},
 
 	-- Navigation
 	{
-		src = "/home/gorgek/.config/nvim/plugins/neo-tree.nvim",
+		src = plug("neo-tree.nvim"),
 	},
 	{
-		src = "/home/gorgek/.config/nvim/plugins/grug-far.nvim",
+		src = plug("grug-far.nvim"),
 	},
 
 	-- Productivity
 	{
-		src = "/home/gorgek/.config/nvim/plugins/time-machine.nvim",
+		src = plug("time-machine.nvim"),
 	},
 
 	-- Database
 	{
-		src = "/home/gorgek/.config/nvim/plugins/vim-dadbod",
+		src = plug("vim-dadbod"),
 	},
 	{
-		src = "/home/gorgek/.config/nvim/plugins/vim-dadbod-completion",
+		src = plug("vim-dadbod-completion"),
 	},
 	{
-		src = "/home/gorgek/.config/nvim/plugins/dbui.nvim",
+		src = plug("dbui.nvim"),
 	},
 
 	-- gRPC
 	{
-		src = "/home/gorgek/.config/nvim/plugins/grpc-ui.nvim",
+		src = plug("grpc-ui.nvim"),
 	},
 
 	-- LSP
 	{
-		src = "/home/gorgek/.config/nvim/plugins/goplements.nvim",
+		src = plug("goplements.nvim"),
 	},
 
 	-- Preview
 	{
-		src = "/home/gorgek/.config/nvim/plugins/render-markdown.nvim",
+		src = plug("render-markdown.nvim"),
 	},
 	{
-		src = "/home/gorgek/.config/nvim/plugins/jqscratch.nvim",
+		src = plug("jqscratch.nvim"),
 	},
 	{
-		src = "/home/gorgek/.config/nvim/plugins/csvview.nvim",
+		src = plug("csvview.nvim"),
 	},
 
 	-- Statusbar
 	{
-		src = "/home/gorgek/.config/nvim/plugins/heirline.nvim",
+		src = plug("heirline.nvim"),
 	},
 
 	-- AI
 	{
-		src = "/home/gorgek/.config/nvim/plugins/codecompanion.nvim",
+		src = plug("codecompanion.nvim"),
 	},
 	{
-		src = "/home/gorgek/.config/nvim/plugins/minuet-ai.nvim",
+		src = plug("minuet-ai.nvim"),
 	},
 
 	-- Testing
 	{
-		src = "/home/gorgek/.config/nvim/plugins/neotest",
+		src = plug("neotest"),
 	},
 	{
-		src = "/home/gorgek/.config/nvim/plugins/neotest-golang",
+		src = plug("neotest-golang"),
 	},
 	{
-		src = "/home/gorgek/.config/nvim/plugins/neotest-python",
+		src = plug("neotest-python"),
 	},
 
 	-- Leetcode
 	{
-		src = "/home/gorgek/.config/nvim/plugins/leetcode.nvim",
+		src = plug("leetcode.nvim"),
 	},
 }, { confirm = false, load = function() end })
 
