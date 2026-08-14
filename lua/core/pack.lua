@@ -12,6 +12,9 @@ local loaded = {}
 -- Track packadd'd plugin directory names (deduplication)
 local packadded = {}
 
+-- Registry passed to setup, retained so M.load() can force-load an entry.
+local registry_entries = {}
+
 --- Idempotent :packadd helper.
 -- Adds plugin directory to runtimepath AND sources its plugin/ files.
 -- Deduplicated via packadded table.
@@ -64,6 +67,7 @@ end
 --   - packadd: array of plugin directory names; :packadd each before require
 --   - once:    for event entries; default true (load once then stop listening)
 function M.setup(registry)
+	registry_entries = registry
 	for _, entry in ipairs(registry) do
 		if entry.event then
 			-- Event-triggered loading (UIEnter, BufReadPre, InsertEnter, BufWritePre, etc.)
@@ -109,6 +113,20 @@ end
 --- Returns list of loaded module names (for debugging)
 function M.loaded()
 	return vim.tbl_keys(loaded)
+end
+
+--- Force-load a registry entry by module name (and optional fn), regardless of its
+-- trigger. Used to eagerly load a normally-lazy entry when a runtime condition
+-- holds (e.g. nvim was launched with a directory argument that neo-tree should
+-- hijack). Returns true if an entry was loaded, false if none matched.
+function M.load(mod, fn)
+	for _, entry in ipairs(registry_entries) do
+		if entry.mod == mod and entry.fn == fn then
+			load_entry(entry)
+			return true
+		end
+	end
+	return false
 end
 
 return M

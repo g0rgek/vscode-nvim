@@ -315,6 +315,7 @@ pack.setup({
 		},
 		packadd = {
 			"nui.nvim",
+			"plenary.nvim",
 			"blink.lib",
 			"blink.cmp",
 			"neo-tree.nvim",
@@ -398,3 +399,25 @@ pack.setup({
 	{ mod = "preview", fn = "md", defer = 50, packadd = { "render-markdown.nvim" } },
 	{ mod = "notification", defer = 1, packadd = { "nvim-notify" } },
 })
+
+-- =============================================================================
+-- Directory-argument hijack
+-- netrw is disabled globally (loaded_netrw = 1 in init.lua), and neo-tree is
+-- otherwise lazy-loaded only via <leader>ef. When nvim is launched with a
+-- directory argument, no BufRead/BufNewFile fires for it, so nothing would load
+-- neo-tree and the directory would open as a plain (empty) buffer or hang.
+-- Load the sidebar eagerly here so neo-tree's BufEnter hijack
+-- (hijack_netrw_behavior = "open_default") replaces the directory buffer in
+-- place. Must happen during init.lua — before the directory's BufEnter — not on
+-- VimEnter, or the hijack arrives too late.
+-- =============================================================================
+local launch_has_dir = false
+for i = 0, vim.fn.argc() - 1 do
+	if vim.fn.isdirectory(vim.fn.argv(i)) == 1 then
+		launch_has_dir = true
+		break
+	end
+end
+if launch_has_dir then
+	pack.load("sidebar")
+end
