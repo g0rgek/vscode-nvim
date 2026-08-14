@@ -15,6 +15,14 @@ require("vscode").setup({
 vim.cmd.colorscheme("vscode")
 vim.opt.background = "dark"
 
+-- Paint the first frame immediately so the screen doesn't sit on the black
+-- `clear screen` canvas while the rest of `require("plugins")` (treesitter,
+-- vim.filetype, etc.) still loads. Without this, the first redraw is deferred to
+-- after init.lua completes, which on a cold start leaves a visible black flash at
+-- the bottom (statusline + cmdline) before the vscode colors + custom statusline
+-- render.
+vim.cmd("redraw")
+
 -- Set blink.cmp highlights immediately (not deferred) so they're ready
 -- before UIEnter — blink loads on InsertEnter which can fire early.
 vim.api.nvim_set_hl(0, "CmpMenu", { bg = "#252526", fg = "#7c7c7d" })

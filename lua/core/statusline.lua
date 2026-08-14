@@ -5,6 +5,7 @@
 
 -- Register statusline highlights (uniform blue background)
 vim.api.nvim_set_hl(0, "StatusLine", { fg = "#ffffff", bg = "#0074c2" })
+vim.api.nvim_set_hl(0, "StatusLineNC", { fg = "#ffffff", bg = "#0074c2" })
 vim.api.nvim_set_hl(0, "StatusLineMode", { fg = "#ffffff", bg = "#0074c2", bold = true })
 vim.api.nvim_set_hl(0, "StatusFilePath", { fg = "#ffffff", bg = "#0074c2" })
 vim.api.nvim_set_hl(0, "StatusSelCount", { fg = "#b4d5f5", bg = "#0074c2" })
@@ -151,6 +152,7 @@ vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI", "CmdlineLeave" }, {
 -- Helper to re-apply after colorscheme resets
 local function apply_highlights()
 	pcall(vim.api.nvim_set_hl, 0, "StatusLine", { fg = "#ffffff", bg = "#0074c2" })
+	pcall(vim.api.nvim_set_hl, 0, "StatusLineNC", { fg = "#ffffff", bg = "#0074c2" })
 	pcall(vim.api.nvim_set_hl, 0, "StatusLineMode", { fg = "#ffffff", bg = "#0074c2", bold = true })
 	pcall(vim.api.nvim_set_hl, 0, "StatusFilePath", { fg = "#ffffff", bg = "#0074c2" })
 	pcall(vim.api.nvim_set_hl, 0, "StatusSelCount", { fg = "#b4d5f5", bg = "#0074c2" })
